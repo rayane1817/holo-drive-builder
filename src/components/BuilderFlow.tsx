@@ -30,17 +30,20 @@ const BuilderFlow = ({ steps, onComplete }: BuilderFlowProps) => {
       ? true
       : selections[currentStep.id] !== undefined);
 
-  const handleSelect = (productId: string) => {
-    if (currentStep.type === "multi-select") {
-      const current = (selections[currentStep.id] || []) as string[];
+const handleSelect = (productId: string) => {
+  if (currentStep.type === "multi-select") {
+    setSelections(prev => {
+      const current = (prev[currentStep.id] || []) as string[];
       const newSelection = current.includes(productId)
-        ? current.filter((id) => id !== productId)
+        ? current.filter(id => id !== productId)
         : [...current, productId];
-      setSelections({ ...selections, [currentStep.id]: newSelection });
-    } else {
-      setSelections({ ...selections, [currentStep.id]: productId });
-    }
-  };
+      return { ...prev, [currentStep.id]: newSelection };
+    });
+  } else {
+    setSelections(prev => ({ ...prev, [currentStep.id]: productId }));
+  }
+};
+
 
   const handleNext = () => {
     if (isLastStep) {
