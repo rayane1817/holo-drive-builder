@@ -219,10 +219,6 @@ export default function EcosystemBuilder() {
                         setSelection(state.activeStep, newSel);
                       } else {
                         setSelection(state.activeStep, product.id);
-                        // Auto-advance to next step for required single-choice items
-                        if (currentStepIndex < steps.length - 1) {
-                          setTimeout(() => goToStep(currentStepIndex + 1), 300);
-                        }
                       }
                     }}
                     className={`
