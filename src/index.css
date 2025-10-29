@@ -2,91 +2,71 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Frutiger Aero 2000s Tech Aesthetic - Thrustmaster Edition */
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
 
 @layer base {
   :root {
-    /* Core Frutiger Aero Theme Colors */
+    /* Frutiger Aero Theme - 2000s Tech Aesthetic */
     --background: 210 100% 8%;
-    --foreground: 200 100% 95%;
+    --foreground: 195 100% 95%;
 
-    --card: 215 75% 12%;
-    --card-foreground: 200 100% 95%;
+    --card: 210 80% 15%;
+    --card-foreground: 195 100% 95%;
 
-    --popover: 215 80% 10%;
-    --popover-foreground: 200 100% 95%;
+    --popover: 210 90% 12%;
+    --popover-foreground: 195 100% 95%;
 
-    --primary: 210 100% 56%;              /* #1E90FF electric blue */
-    --primary-foreground: 215 100% 8%;
+    --primary: 195 100% 47%;
+    --primary-foreground: 210 100% 8%;
 
-    --secondary: 215 85% 10%;             /* deep navy */
-    --secondary-foreground: 200 100% 95%;
+    --secondary: 210 70% 20%;
+    --secondary-foreground: 195 100% 95%;
 
-    --muted: 215 60% 20%;
-    --muted-foreground: 205 50% 75%;
+    --muted: 210 60% 25%;
+    --muted-foreground: 195 50% 70%;
 
-    --accent: 195 100% 74%;               /* #7FD8FF bright cyan */
-    --accent-foreground: 215 100% 8%;
+    --accent: 180 100% 60%;
+    --accent-foreground: 210 100% 8%;
 
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 200 100% 95%;
+    --destructive-foreground: 195 100% 95%;
 
-    --border: 200 70% 85%;
-    --input: 215 70% 15%;
-    --ring: 195 100% 74%;
+    --border: 195 50% 30%;
+    --input: 210 70% 20%;
+    --ring: 195 100% 60%;
 
-    --radius: 1.25rem;
+    --radius: 1rem;
 
     /* Custom Frutiger Aero tokens */
-    --glow-primary: 210 100% 56%;         /* #1E90FF */
-    --glow-secondary: 195 100% 74%;       /* #7FD8FF cyan */
-    --glow-strong: 195 100% 80%;
-    --glass-bg: 215 75% 12%;
-    --connector-line: 200 90% 85%;
+    --glow-primary: 195 100% 50%;
+    --glow-secondary: 180 100% 70%;
+    --glass-bg: 210 60% 15%;
+    --connector-line: 195 70% 60%;
     
     /* Gradients */
-    --gradient-bg-start: 209 100% 27%;    /* #003E88 */
-    --gradient-bg-end: 210 100% 11%;      /* #001A38 */
-  }
-
-  body {
-    @apply bg-background text-foreground;
-    background: radial-gradient(circle at 50% 30%, hsl(var(--gradient-bg-start)) 0%, hsl(var(--gradient-bg-end)) 80%);
-    min-height: 100vh;
-    position: relative;
-    font-family: 'Bank Gothic', 'Eurostile Extended', 'Arial Narrow', sans-serif;
-  }
-
-  /* Grid overlay texture */
-  body::after {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image: 
-      linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
-    background-size: 50px 50px;
-    pointer-events: none;
-    z-index: 0;
+    --gradient-bg-start: 210 100% 8%;
+    --gradient-bg-end: 210 100% 20%;
   }
 }
 
 @layer utilities {
-  /* Glass morphism panel */
+  /* Glass morphism effect */
   .glass-panel {
-    background: hsla(var(--glass-bg), 0.6);
-    backdrop-filter: blur(12px) brightness(1.25) saturate(1.3);
-    border: 1px solid hsla(var(--border), 0.25);
-    box-shadow: 0 0 24px hsla(var(--glow-primary), 0.45);
+    background: hsla(var(--glass-bg), 0.45);
+    backdrop-filter: blur(12px) brightness(1.2);
+    border: 1px solid hsla(var(--border), 0.3);
+    box-shadow: 0 0 24px hsla(var(--glow-primary), 0.4);
   }
 
   /* Glow effects */
   .glow-soft {
-    box-shadow: 0 0 24px hsla(var(--glow-primary), 0.45);
+    box-shadow: 0 0 24px hsla(var(--glow-primary), 0.4);
   }
 
   .glow-strong {
-    box-shadow: 0 0 60px hsla(var(--glow-strong), 0.8);
+    box-shadow: 0 0 40px hsla(var(--glow-secondary), 0.6);
   }
 
   .glow-pulse {
@@ -95,31 +75,40 @@
 
   @keyframes pulse-glow {
     0% {
-      box-shadow: 0 0 12px hsla(var(--glow-primary), 0.4);
+      box-shadow: 0 0 10px hsla(var(--glow-primary), 0.4);
     }
     100% {
-      box-shadow: 0 0 28px hsla(var(--glow-strong), 0.9);
+      box-shadow: 0 0 30px hsla(var(--glow-secondary), 0.8);
     }
-  }
-
-  /* Button glow */
-  .button-glow {
-    box-shadow: 0 0 18px hsla(var(--glow-secondary), 0.7);
-    transition: all 0.25s ease-in-out;
-  }
-
-  .button-glow:hover {
-    box-shadow: 0 0 30px hsla(var(--glow-secondary), 1);
   }
 
   /* Connector lines */
   .connector-line {
-    border: 1px solid hsla(var(--connector-line), 0.4);
+    position: relative;
+  }
+
+  .connector-line::before {
+    content: '';
+    position: absolute;
+    width: 2px;
+    height: 100%;
+    background: linear-gradient(
+      180deg,
+      hsla(var(--connector-line), 0),
+      hsla(var(--connector-line), 0.6),
+      hsla(var(--connector-line), 0)
+    );
+    left: 50%;
+    transform: translateX(-50%);
   }
 
   /* Holographic background */
   .holo-bg {
-    background: radial-gradient(circle at 50% 30%, hsl(var(--gradient-bg-start)) 0%, hsl(var(--gradient-bg-end)) 80%);
+    background: linear-gradient(
+      180deg,
+      hsl(var(--gradient-bg-start)) 0%,
+      hsl(var(--gradient-bg-end)) 100%
+    );
     position: relative;
   }
 
@@ -132,10 +121,25 @@
       radial-gradient(circle at 80% 70%, hsla(var(--glow-secondary), 0.08) 0%, transparent 50%);
     pointer-events: none;
   }
+
+  .holo-bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: 
+      linear-gradient(0deg, hsla(var(--connector-line), 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, hsla(var(--connector-line), 0.03) 1px, transparent 1px);
+    background-size: 50px 50px;
+    pointer-events: none;
+  }
 }
 
 @layer base {
   * {
     @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
   }
 }
