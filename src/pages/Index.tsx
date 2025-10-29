@@ -1,116 +1,78 @@
-import { useState } from "react";
-import { motion } from "framer-motion";
-import { BuilderFlow } from "@/components/BuilderFlow";
-import { builderSteps } from "@/data/builderConfig";
-import { Button } from "@/components/ui/button";
-import { RotateCcw } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
-const Index = () => {
-  const [isComplete, setIsComplete] = useState(false);
-  const [configuration, setConfiguration] = useState<Record<string, string | string[]>>({});
-  const {
-    toast
-  } = useToast();
-  const handleComplete = (selections: Record<string, string | string[]>) => {
-    setConfiguration(selections);
-    setIsComplete(true);
-    toast({
-      title: "Build Complete!",
-      description: "Your racing simulator configuration has been saved."
-    });
-  };
-  const handleReset = () => {
-    setIsComplete(false);
-    setConfiguration({});
-  };
-  return <div className="min-h-screen holo-bg">
-      {/* Header */}
-      <header className="relative z-10 py-8 border-b border-border/30">
-        <div className="container mx-auto px-4">
-          <motion.div initial={{
-          opacity: 0,
-          y: -20
-        }} animate={{
-          opacity: 1,
-          y: 0
-        }} className="text-center space-y-2">
-            <h1 className="text-5xl md:text-6xl font-bold text-foreground tracking-tight uppercase font-futuristic">
-              Racing Sim Builder
-            </h1>
-            <p className="text-accent text-sm uppercase tracking-[0.3em]">
-              Thrustmaster Ecosystem Configurator
-            </p>
-          </motion.div>
-        </div>
-      </header>
-
-      {/* Main Content */}
-      <main className="relative z-10">
-        {!isComplete ? <BuilderFlow steps={builderSteps} onComplete={handleComplete} /> : <motion.div initial={{
-        opacity: 0,
-        scale: 0.9
-      }} animate={{
-        opacity: 1,
-        scale: 1
-      }} className="container mx-auto px-4 py-12">
-            <div className="max-w-4xl mx-auto glass-panel rounded-3xl p-8 md:p-12">
-              <div className="text-center space-y-6">
-                <motion.div initial={{
-              scale: 0
-            }} animate={{
-              scale: 1
-            }} transition={{
-              type: "spring",
-              duration: 0.6
-            }} className="w-24 h-24 mx-auto rounded-full bg-primary/20 flex items-center justify-center glow-strong">
-                  <div className="text-4xl">🏁</div>
-                </motion.div>
-
-                <h2 className="text-4xl font-bold text-foreground uppercase font-futuristic">
-                  Build Complete!
-                </h2>
-
-                <p className="text-muted-foreground">
-                  Your custom Thrustmaster racing simulator configuration:
-                </p>
-
-                <div className="space-y-4 text-left">
-                  {Object.entries(configuration).map(([stepId, selection]) => {
-                const step = builderSteps.find(s => s.id === stepId);
-                if (!step || !selection) return null;
-                return <div key={stepId} className="glass-panel rounded-xl p-4 border border-primary/20">
-                        <h3 className="text-sm uppercase tracking-wider text-muted-foreground mb-2">
-                          {step.label}
-                        </h3>
-                        {Array.isArray(selection) ? <div className="space-y-1">
-                            {selection.map(id => {
-                      const product = step.products.find(p => p.id === id);
-                      return <p key={id} className="text-foreground font-semibold">
-                                  • {product?.label}
-                                </p>;
-                    })}
-                          </div> : <p className="text-foreground font-semibold">
-                            {step.products.find(p => p.id === selection)?.label}
-                          </p>}
-                      </div>;
-              })}
-                </div>
-
-                <Button onClick={handleReset} className="glass-panel bg-primary hover:bg-primary/90 text-primary-foreground glow-soft">
-                  <RotateCcw className="w-4 h-4 mr-2" />
-                  Start New Build
-                </Button>
-              </div>
-            </div>
-          </motion.div>}
-      </main>
-
-      {/* Footer */}
-      <footer className="relative z-10 py-8 border-t border-border/30 mt-20">
-        <div className="container mx-auto px-4 text-center">
-          <p className="text-sm text-muted-foreground">Official configurator for Thrustmaster racing products</p>
-        </div>
-      </footer>
-    </div>;
-};
-export default Index;
+const steps: Step[] = [
+  {
+    id: "wheelbase",
+    label: "Step 1 — Choose Wheelbase",
+    type: "choice-grid",
+    isOptional: false,
+    products: [
+      { id: "t818", name: "T818", url: "https://www.thrustmaster.com/en-us/products/t818/" },
+      { id: "t300", name: "T300 Racing Servo Base", url: "https://www.thrustmaster.com/en-us/products/t300-racing-wheel-servo-base/" },
+      { id: "tx",   name: "TX Racing Wheel Servo Base", url: "https://www.thrustmaster.com/en-us/products/tx-racing-wheel-servo-base/" },
+      { id: "tsxw", name: "TS-XW Servo Base", url: "https://www.thrustmaster.com/en-us/products/ts-xw-servo-base/" },
+      { id: "tspc", name: "TS-PC Racer", url: "https://www.thrustmaster.com/en-us/products/ts-pc-racer-servo-base/" },
+      { id: "tgt2", name: "T-GT II", url: "https://www.thrustmaster.com/en-us/products/t-gt-ii-servo-base/" },
+      { id: "t598", name: "T598 Servo Base", url: "https://www.thrustmaster.com/en-us/products/t598-servo-base/" },
+      { id: "t500", name: "T500 RS", url: "https://www.thrustmaster.com/en-us/products/t500-rs/" }
+    ]
+  },
+  {
+    id: "wheel",
+    label: "Step 2 — Choose Wheel Add-On",
+    type: "choice-carousel", // <- forces carousel
+    isOptional: false,
+    compatibility: { "*": ["sf1000","488gt3","488challenge","f1","open","599xx","r383","p310","leather28gt","gte458","250gto","evo32r","hypercar"] },
+    products: [
+      { id: "sf1000", name: "Ferrari SF1000", url: "https://www.thrustmaster.com/en-us/products/formula-wheel-add-on-ferrari-sf1000-edition/" },
+      { id: "488gt3", name: "Ferrari 488 GT3", url: "https://www.thrustmaster.com/en-us/products/ferrari-488-gt3-wheel-add-on/" },
+      { id: "488challenge", name: "Ferrari 488 Challenge", url: "https://www.thrustmaster.com/en-us/products/ferrari-488-challenge-wheel-add-on/" },
+      { id: "f1", name: "Ferrari F1", url: "https://www.thrustmaster.com/en-us/products/ferrari-f1-wheel-add-on/" },
+      { id: "open", name: "TM Open Wheel", url: "https://www.thrustmaster.com/en-us/products/tm-open-wheel-add-on/" },
+      { id: "599xx", name: "599XX EVO 30 Alcantara", url: "https://www.thrustmaster.com/en-us/products/599xx-evo-30-wheel-add-on-alcantara/" },
+      { id: "r383", name: "Rally Sparco R383 Mod", url: "https://www.thrustmaster.com/en-us/products/rally-wheel-add-on-sparco-r383-mod/" },
+      { id: "p310", name: "Sparco P310 Mod", url: "https://www.thrustmaster.com/en-us/products/tm-competition-wheel-add-on-sparco-p310-mod/" },
+      { id: "leather28gt", name: "TM Leather 28 GT", url: "https://www.thrustmaster.com/en-us/products/tm-leather-28-gt-wheel-add-on/" },
+      { id: "gte458", name: "Ferrari GTE 28 cm", url: "https://support.thrustmaster.com/en/product/ferrarigtewheeladdonf458-en/" },
+      { id: "250gto", name: "Ferrari 250 GTO", url: "https://www.thrustmaster.com/en-us/products/ferrari-250-gto-wheel-add-on/" },
+      { id: "evo32r", name: "EVO Racing 32R Leather", url: "https://www.thrustmaster.com/en-us/products/evo-racing-32r-leather/" },
+      { id: "hypercar", name: "HYPERCAR Wheel Add-On", url: "https://www.thrustmaster.com/en-us/products/hypercar-wheel-add-on/" }
+    ]
+  },
+  {
+    id: "pedals",
+    label: "Optional — Pedals",
+    type: "choice-grid",
+    isOptional: true,
+    products: [
+      { id: "tlcm", name: "T-LCM Pedals", url: "https://www.thrustmaster.com/en-us/products/t-lcm-pedals/" },
+      { id: "t3pm", name: "T3PM Pedal Set", url: "https://www.thrustmaster.com/en-us/products/t3pm/" },
+      { id: "t3pa", name: "T3PA Add-On", url: "https://www.thrustmaster.com/en-us/products/t3pa-add-on/" },
+      { id: "t3papro", name: "T3PA-PRO Add-On", url: "https://www.thrustmaster.com/en-us/products/t3pa-add-on/" }
+    ]
+  },
+  {
+    id: "shifter_handbrake",
+    label: "Optional — Shifter / Handbrake",
+    type: "choice-grid",
+    isOptional: true,
+    products: [
+      { id: "th8a", name: "TH8A Shifter", url: "https://www.thrustmaster.com/en-us/products/th8a-shifter-add-on/" },
+      { id: "th8s", name: "TH8S Shifter", url: "https://www.thrustmaster.com/en-us/products/th8s-shifter-add-on/" },
+      { id: "tss", name: "TSS Handbrake Sparco Mod", url: "https://www.thrustmaster.com/en-us/products/tss-handbrake-sparco-mod/" },
+      { id: "tssplus", name: "TSS Handbrake Sparco Mod+", url: "https://www.thrustmaster.com/en-us/products/tss-handbrake-sparco-mod-plus/" }
+    ]
+  },
+  {
+    id: "accessories",
+    label: "Optional — Accessories",
+    type: "multi-select",
+    isOptional: true,
+    products: [
+      { id: "btled", name: "BT LED Display", url: "https://www.thrustmaster.com/en-us/products/bt-led-display/" },
+      { id: "simhub", name: "TM Sim Hub", url: "https://www.thrustmaster.com/en-us/products/tm-sim-hub/" },
+      { id: "chrono", name: "T-Chrono Paddles (SF1000)", url: "https://www.thrustmaster.com/en-us/products/t-chrono-paddles/" },
+      { id: "db9adapter", name: "DB9 Pedals T.RJ12 Adapter", url: "https://www.thrustmaster.com/en-us/products/db9-pedals-t-rj12-adapter/" },
+      { id: "qr", name: "Quick Release Adapter", url: "https://www.thrustmaster.com/en-us/products/quick-release-adapter/" },
+      { id: "clamp", name: "TM Racing Clamp", url: "https://www.thrustmaster.com/en-us/products/tm-racing-clamp/" }
+    ]
+  }
+];
