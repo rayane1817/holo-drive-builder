@@ -18,7 +18,7 @@ interface BuilderFlowProps {
   onComplete: (selections: Record<string, string | string[]>) => void;
 }
 
-export const BuilderFlow = ({ steps, onComplete }: BuilderFlowProps) => {
+const BuilderFlow = ({ steps, onComplete }: BuilderFlowProps) => {
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [selections, setSelections] = useState<Record<string, string | string[]>>({});
 
@@ -159,3 +159,5 @@ export const BuilderFlow = ({ steps, onComplete }: BuilderFlowProps) => {
     </div>
   );
 };
+
+export default BuilderFlow;
