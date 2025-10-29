@@ -29,6 +29,8 @@ export default function EcosystemBuilder() {
     }
   }, [state.selections.wheelbase]);
 
+  const hasWheelbaseSelection = !!state.selections.wheelbase;
+
   const isWheelCompatible = (wheelId: string, wheelbaseId: string) => {
     const wheelStep = steps.find(s => s.id === "wheel");
     if (!wheelStep?.compatibility?.[wheelbaseId]) return true;
@@ -45,13 +47,21 @@ export default function EcosystemBuilder() {
     return step.products;
   };
 
+  const hasCurrentSelection = () => {
+    const step = steps[currentStepIndex];
+    if (!step) return false;
+    const selection = state.selections[step.id];
+    return selection !== undefined && (Array.isArray(selection) ? selection.length > 0 : selection !== "");
+  };
+
   const canContinue = () => {
     const step = steps[currentStepIndex];
     if (!step) return false;
+    // For required steps, must have selection
     if (step.required) {
-      const selection = state.selections[step.id];
-      return selection !== undefined && (Array.isArray(selection) ? selection.length > 0 : selection !== "");
+      return hasCurrentSelection();
     }
+    // Optional steps can always continue
     return true;
   };
 
@@ -63,19 +73,21 @@ export default function EcosystemBuilder() {
 
   const activeStepConfig = steps.find(s => s.id === state.activeStep);
   const displayProducts = getFilteredProducts(state.activeStep);
-  const centerProduct = state.activeStep === "wheelbase" 
-    ? null 
-    : steps.find(s => s.id === "wheelbase")?.products.find(p => p.id === state.selections.wheelbase);
+  const centerProduct = hasWheelbaseSelection
+    ? steps.find(s => s.id === "wheelbase")?.products.find(p => p.id === state.selections.wheelbase)
+    : null;
 
   if (!activeStepConfig) return null;
 
   const isWheelbaseStep = state.activeStep === "wheelbase";
+  const showCenterHub = hasWheelbaseSelection && !isWheelbaseStep;
+  const showConnectorLines = hasWheelbaseSelection && !isWheelbaseStep;
 
   return (
-    <div className="relative w-full min-h-screen holo-bg overflow-hidden">
+    <div className="relative w-full min-h-screen overflow-hidden">
       {/* Header */}
       <div className="absolute top-8 left-8 z-10">
-        <h2 className="text-xl md:text-2xl font-futuristic font-semibold uppercase tracking-wider text-cyan-200">
+        <h2 className="text-xl md:text-2xl font-semibold uppercase tracking-wider text-white">
           {activeStepConfig.required ? "Required: " : "Optional: "}
           {activeStepConfig.id === "wheelbase" ? "Choose Your Wheelbase" : 
            activeStepConfig.id === "wheel" ? "Choose Your Wheel" :
@@ -84,8 +96,8 @@ export default function EcosystemBuilder() {
            "Choose Accessories"}
         </h2>
         {centerProduct && (
-          <div className="mt-2 glass-panel inline-block px-6 py-3 rounded-xl">
-            <span className="text-2xl md:text-3xl font-futuristic font-bold uppercase tracking-wide text-cyan-300">
+          <div className="mt-2 bg-white/5 backdrop-blur-sm inline-block px-6 py-3 rounded-xl border border-white/20">
+            <span className="text-2xl md:text-3xl font-bold uppercase tracking-wide text-white">
               {centerProduct.name}
             </span>
           </div>
@@ -94,25 +106,24 @@ export default function EcosystemBuilder() {
 
       {/* Ecosystem Container */}
       <div className="relative w-full h-[800px] flex items-center justify-center">
-        {/* Center Hub */}
-        {centerProduct && !isWheelbaseStep && (
+        {/* Center Hub - only show after wheelbase is selected */}
+        {showCenterHub && centerProduct && (
           <motion.div
             initial={{ scale: 0, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="absolute"
+            className="absolute z-20"
             style={{ left: "50%", top: "50%", transform: "translate(-50%, -50%)" }}
           >
             <div className="relative">
-              <div className="absolute inset-0 rounded-full bg-cyan-400/20 blur-2xl animate-glow-pulse" style={{ width: "200px", height: "200px", left: "-25px", top: "-25px" }} />
+              <div className="absolute inset-0 rounded-full bg-white/20 blur-3xl" style={{ width: "240px", height: "240px", left: "-45px", top: "-45px" }} />
               <motion.div
-                whileHover={{ scale: 1.05 }}
-                className="relative w-[150px] h-[150px] rounded-full glass-panel glow-strong flex items-center justify-center"
+                className="relative w-[150px] h-[150px] rounded-full bg-white/10 backdrop-blur-md border-4 border-white/50 shadow-2xl flex items-center justify-center"
               >
                 {images[centerProduct.id] ? (
-                  <img src={images[centerProduct.id]} alt={centerProduct.name} className="w-24 h-24 object-contain opacity-80 brightness-110" />
+                  <img src={images[centerProduct.id]} alt={centerProduct.name} className="w-28 h-28 object-contain" />
                 ) : (
-                  <div className="w-16 h-16 rounded-full bg-cyan-400/20 animate-pulse" />
+                  <div className="w-20 h-20 rounded-full bg-white/20 animate-pulse" />
                 )}
               </motion.div>
             </div>
@@ -126,45 +137,50 @@ export default function EcosystemBuilder() {
             ? stepSelections.includes(product.id)
             : stepSelections === product.id;
           const delay = 0.3 + index * 0.1;
-          const position = isWheelbaseStep 
-            ? { x: `${30 + (index % 3) * 20}%`, y: `${30 + Math.floor(index / 3) * 25}%` }
-            : SPOKE_POSITIONS[index % SPOKE_POSITIONS.length];
+          
+          // Calculate radial position
+          const totalProducts = displayProducts.length;
+          const angleStep = (2 * Math.PI) / totalProducts;
+          const angle = index * angleStep - Math.PI / 2; // Start from top
+          const radius = isWheelbaseStep ? 35 : 35; // Percentage
+          const position = {
+            x: `${50 + radius * Math.cos(angle)}%`,
+            y: `${50 + radius * Math.sin(angle)}%`
+          };
 
           return (
             <div key={product.id}>
-              {/* Connector line */}
-              {!isWheelbaseStep && centerProduct && (
+              {/* Connector line - only show after wheelbase selection */}
+              {showConnectorLines && (
                 <motion.svg
                   initial={{ pathLength: 0, opacity: 0 }}
-                  animate={{ pathLength: 1, opacity: 0.6 }}
+                  animate={{ pathLength: 1, opacity: 0.5 }}
                   transition={{ duration: 0.8, delay }}
                   className="absolute top-0 left-0 w-full h-full pointer-events-none"
-                  style={{ zIndex: 1 }}
+                  style={{ zIndex: 5 }}
                 >
                   <motion.line
                     x1="50%"
                     y1="50%"
                     x2={position.x}
                     y2={position.y}
-                    stroke="#7FD8FF"
+                    stroke="rgba(255, 255, 255, 0.6)"
                     strokeWidth="2"
-                    strokeDasharray="4 4"
-                    opacity={0.6}
                     animate={{
-                      strokeDashoffset: isSelected ? [0, -8] : 0,
-                      opacity: isSelected ? 0.9 : 0.6,
-                    }}
-                    transition={{
-                      strokeDashoffset: { duration: 1, repeat: Infinity, ease: "linear" },
+                      opacity: isSelected ? 0.8 : 0.4,
                     }}
                   />
                   <motion.circle
                     cx="50%"
                     cy="50%"
+                    r="8"
+                    fill="rgba(255, 255, 255, 0.8)"
+                  />
+                  <motion.circle
+                    cx={position.x}
+                    cy={position.y}
                     r="6"
-                    fill="#7FD8FF"
-                    animate={{ opacity: [0.5, 1, 0.5] }}
-                    transition={{ duration: 2, repeat: Infinity }}
+                    fill="rgba(255, 255, 255, 0.6)"
                   />
                 </motion.svg>
               )}
@@ -180,12 +196,12 @@ export default function EcosystemBuilder() {
                 <div className="relative">
                   {/* Glowing ring */}
                   <motion.div
-                    className="absolute inset-0 rounded-full bg-cyan-400/10 blur-xl"
-                    style={{ width: "160px", height: "160px", left: "-30px", top: "-30px" }}
+                    className="absolute inset-0 rounded-full"
+                    style={{ width: "200px", height: "200px", left: "-40px", top: "-40px" }}
                     animate={{
                       boxShadow: isSelected
-                        ? ["0 0 20px rgba(127,216,255,0.4)", "0 0 40px rgba(127,216,255,0.8)", "0 0 20px rgba(127,216,255,0.4)"]
-                        : "0 0 15px rgba(30,144,255,0.3)",
+                        ? ["0 0 30px rgba(255,255,255,0.4)", "0 0 50px rgba(255,255,255,0.7)", "0 0 30px rgba(255,255,255,0.4)"]
+                        : "0 0 20px rgba(255,255,255,0.2)",
                     }}
                     transition={{ duration: 2, repeat: Infinity }}
                   />
@@ -206,21 +222,22 @@ export default function EcosystemBuilder() {
                       }
                     }}
                     className={`
-                      relative w-[100px] h-[100px] rounded-full glass-panel cursor-pointer
+                      relative w-[120px] h-[120px] rounded-full cursor-pointer
                       flex items-center justify-center transition-all duration-300 overflow-hidden
-                      ${isSelected ? "ring-2 ring-cyan-300 glow-strong" : "hover:glow-soft"}
+                      bg-white/10 backdrop-blur-md border-2
+                      ${isSelected ? "border-white shadow-[0_0_30px_rgba(255,255,255,0.6)]" : "border-white/40 hover:border-white/60"}
                     `}
                   >
                     {images[product.id] ? (
-                      <img src={images[product.id]} alt={product.name} className="w-20 h-20 object-contain opacity-80 brightness-110" />
+                      <img src={images[product.id]} alt={product.name} className="w-24 h-24 object-contain" />
                     ) : (
-                      <div className="w-16 h-16 rounded-full bg-cyan-400/20 animate-pulse" />
+                      <div className="w-20 h-20 rounded-full bg-white/20 animate-pulse" />
                     )}
                   </motion.div>
 
                   {/* Product label */}
-                  <div className="absolute -bottom-16 left-1/2 -translate-x-1/2 w-40 text-center">
-                    <p className="text-sm font-futuristic font-semibold text-cyan-200 mb-1">
+                  <div className="absolute -bottom-16 left-1/2 -translate-x-1/2 w-48 text-center">
+                    <p className="text-sm font-semibold text-white mb-1">
                       {product.name}
                     </p>
                     <a
@@ -228,7 +245,7 @@ export default function EcosystemBuilder() {
                       target="_blank"
                       rel="noopener noreferrer"
                       onClick={(e) => e.stopPropagation()}
-                      className="inline-flex items-center gap-1 text-xs text-cyan-300 hover:text-cyan-200 transition-colors"
+                      className="inline-flex items-center gap-1 text-xs text-white/80 hover:text-white transition-colors"
                     >
                       <span>Info</span>
                       <ExternalLink className="w-3 h-3" />
@@ -239,12 +256,12 @@ export default function EcosystemBuilder() {
                   {isSelected && (
                     <motion.div
                       layoutId={`selected-${product.id}`}
-                      className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-cyan-300 flex items-center justify-center"
+                      className="absolute -top-2 -right-2 w-7 h-7 rounded-full bg-white flex items-center justify-center shadow-lg"
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
                       transition={{ type: "spring", stiffness: 500, damping: 30 }}
                     >
-                      <span className="text-black text-xs font-bold">✓</span>
+                      <span className="text-blue-900 text-sm font-bold">✓</span>
                     </motion.div>
                   )}
                 </div>
@@ -263,18 +280,32 @@ export default function EcosystemBuilder() {
       >
         <button
           onClick={reset}
-          className="glass-panel px-6 py-3 rounded-xl bg-red-500/20 hover:bg-red-500/30 text-cyan-200 font-futuristic font-semibold uppercase tracking-wider transition-all"
+          className="px-6 py-3 rounded-xl bg-red-500/30 hover:bg-red-500/40 text-white font-semibold uppercase tracking-wider transition-all backdrop-blur-sm border border-red-500/50"
         >
           Reset
         </button>
         {currentStepIndex > 0 && (
           <button
             onClick={() => goToStep(currentStepIndex - 1)}
-            className="glass-panel px-6 py-3 rounded-xl bg-white/10 hover:bg-white/20 text-cyan-200 font-futuristic font-semibold uppercase tracking-wider transition-all"
+            className="px-6 py-3 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold uppercase tracking-wider transition-all backdrop-blur-sm border border-white/30"
           >
             Back
           </button>
         )}
+        {/* Skip button - only for optional steps */}
+        {!activeStepConfig.required && currentStepIndex < steps.length - 1 && (
+          <button
+            onClick={() => {
+              // Clear selection for this step and move to next
+              setSelection(state.activeStep, undefined);
+              goToStep(currentStepIndex + 1);
+            }}
+            className="px-6 py-3 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold uppercase tracking-wider transition-all backdrop-blur-sm border border-white/30"
+          >
+            Skip
+          </button>
+        )}
+        {/* Continue/Finish button */}
         <button
           disabled={!canContinue()}
           onClick={() => {
@@ -284,10 +315,10 @@ export default function EcosystemBuilder() {
               toast.success("Build complete!");
             }
           }}
-          className="glass-panel px-8 py-4 rounded-xl bg-cyan-400/20 hover:bg-cyan-400/30 text-cyan-100 font-futuristic font-semibold uppercase tracking-wider transition-all glow-soft hover:glow-strong disabled:opacity-40 disabled:cursor-not-allowed"
+          className="px-8 py-4 rounded-xl bg-white/20 hover:bg-white/30 text-white font-semibold uppercase tracking-wider transition-all backdrop-blur-sm border border-white/40 shadow-[0_0_20px_rgba(255,255,255,0.3)] disabled:opacity-40 disabled:cursor-not-allowed disabled:shadow-none"
         >
           {currentStepIndex < steps.length - 1 
-            ? (activeStepConfig.required ? "Continue" : "Skip") 
+            ? (hasCurrentSelection() ? "Continue" : (activeStepConfig.required ? "Select to Continue" : "Skip"))
             : "Finish"}
         </button>
       </motion.div>

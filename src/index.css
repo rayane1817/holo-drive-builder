@@ -8,12 +8,12 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Frutiger Aero Theme - 2000s Tech Aesthetic */
-    --background: 210 100% 8%;
-    --foreground: 195 100% 95%;
+    /* Deep Blue Theme - matching Thrustmaster reference */
+    --background: 210 100% 15%;
+    --foreground: 0 0% 100%;
 
-    --card: 210 80% 15%;
-    --card-foreground: 195 100% 95%;
+    --card: 210 80% 20%;
+    --card-foreground: 0 0% 100%;
 
     --popover: 210 90% 12%;
     --popover-foreground: 195 100% 95%;
@@ -141,5 +141,23 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
+    background: linear-gradient(180deg, hsl(210 100% 15%) 0%, hsl(210 100% 10%) 100%);
+    background-attachment: fixed;
+  }
+
+  /* Grid pattern like reference */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+      linear-gradient(hsl(210 100% 25% / 0.3) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(210 100% 25% / 0.3) 1px, transparent 1px);
+    background-size: 50px 50px;
+    pointer-events: none;
+    z-index: 0;
   }
 }
