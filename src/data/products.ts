@@ -81,6 +81,14 @@ export const productData: Record<StepId, StepConfig> = {
   }
 };
 
+export const steps: StepConfig[] = [
+  productData.wheelbase,
+  productData.wheel,
+  productData.pedals,
+  productData.shifter_handbrake,
+  productData.accessories
+];
+
 export const getCompatibleProducts = (
   stepId: StepId,
   wheelbaseId?: string

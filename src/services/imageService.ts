@@ -107,3 +107,32 @@ export const resolveProductImage = async (
 export const getCachedImage = (url: string): string | undefined => {
   return cache[url];
 };
+
+// React hook for product images
+import { useState, useEffect } from 'react';
+import type { Product } from '../data/products';
+
+export const useProductImages = (products: Product[]) => {
+  const [images, setImages] = useState<Record<string, string>>(() => {
+    const initial: Record<string, string> = {};
+    products.forEach(p => {
+      const cached = getCachedImage(p.url);
+      if (cached) initial[p.id] = cached;
+    });
+    return initial;
+  });
+
+  useEffect(() => {
+    products.forEach(product => {
+      if (!images[product.id]) {
+        resolveProductImage(product.url, (imageUrl) => {
+          if (imageUrl) {
+            setImages(prev => ({ ...prev, [product.id]: imageUrl }));
+          }
+        });
+      }
+    });
+  }, [products, images]);
+
+  return images;
+};

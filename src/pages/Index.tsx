@@ -1,7 +1,7 @@
-import HubSpokeBuilder from "../components/HubSpokeBuilder";
+import EcosystemBuilder from "../components/EcosystemBuilder";
 
 function Index() {
-  return <HubSpokeBuilder />;
+  return <EcosystemBuilder />;
 }
 
 export default Index;
