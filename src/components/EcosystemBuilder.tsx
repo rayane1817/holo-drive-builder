@@ -115,7 +115,7 @@ export default function EcosystemBuilder() {
       </div>
 
       {/* Ecosystem Container */}
-      <div className="relative w-full min-h-[600px] md:min-h-[700px] lg:min-h-[800px] flex items-center justify-center py-24 md:py-32">
+      <div className="relative w-full h-[700px] md:h-[800px] flex items-center justify-center py-20 px-4">
         {/* Center Hub - only show after wheelbase is selected */}
         {showCenterHub && centerProduct && (
           <motion.div
@@ -153,8 +153,8 @@ export default function EcosystemBuilder() {
           const angleStep = (2 * Math.PI) / totalProducts;
           const angle = index * angleStep - Math.PI / 2; // Start from top
           
-          // Responsive radius: larger on mobile for better spacing
-          const radius = 42; // Percentage - increased for better mobile view
+          // Responsive radius: smaller on mobile, larger on desktop
+          const radius = 35; // Percentage
           const position = {
             x: `${50 + radius * Math.cos(angle)}%`,
             y: `${50 + radius * Math.sin(angle)}%`
