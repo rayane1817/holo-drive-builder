@@ -25,6 +25,7 @@ export const productData: Record<StepId, StepConfig> = {
     position: { angle: 0 },
     products: [
       { id: "t818", name: "T818", url: "https://www.thrustmaster.com/en-us/products/t818/" },
+      { id: "t598", name: "T598", url: "https://www.thrustmaster.com/en-us/products/t598/" },
       { id: "t300", name: "T300 Racing Servo Base", url: "https://www.thrustmaster.com/en-us/products/t300-racing-wheel-servo-base/" },
       { id: "tx", name: "TX Racing Wheel Servo Base", url: "https://www.thrustmaster.com/en-us/products/tx-racing-wheel-servo-base/" },
       { id: "ts-xw", name: "TS-XW Racer", url: "https://www.thrustmaster.com/en-us/products/ts-xw-racer-sparco-p310-competition-mod/" },
@@ -44,7 +45,13 @@ export const productData: Record<StepId, StepConfig> = {
       { id: "599xx", name: "599XX EVO 30 Alcantara Edition", url: "https://www.thrustmaster.com/en-us/products/599xx-evo-30-wheel-add-on-alcantara/" }
     ],
     compatibility: {
-      // For now, all compatible - can be refined later
+      "t818": ["sf1000", "488-gt3", "open-wheel", "599xx"],
+      "t598": ["sf1000", "488-gt3", "open-wheel", "599xx"],
+      "t300": ["sf1000", "488-gt3", "open-wheel", "599xx"],
+      "tx": ["sf1000", "488-gt3", "open-wheel", "599xx"],
+      "ts-xw": ["sf1000", "488-gt3", "open-wheel", "599xx"],
+      "ts-pc": ["sf1000", "488-gt3", "open-wheel", "599xx"],
+      "t-gt-ii": ["sf1000", "488-gt3", "open-wheel", "599xx"],
       "*": ["sf1000", "488-gt3", "open-wheel", "599xx"]
     }
   },
