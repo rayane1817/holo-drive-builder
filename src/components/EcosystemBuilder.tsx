@@ -115,7 +115,7 @@ export default function EcosystemBuilder() {
       </div>
 
       {/* Ecosystem Container */}
-      <div className="relative w-full h-[700px] md:h-[800px] flex items-center justify-center py-20 px-4">
+      <div className="relative w-full h-[600px] sm:h-[700px] md:h-[800px] flex items-center justify-center py-12 md:py-20 px-4">
         {/* Center Hub - only show after wheelbase is selected */}
         {showCenterHub && centerProduct && (
           <motion.div
@@ -153,11 +153,11 @@ export default function EcosystemBuilder() {
           const angleStep = (2 * Math.PI) / totalProducts;
           const angle = index * angleStep - Math.PI / 2; // Start from top
           
-          // Responsive radius: smaller on mobile, larger on desktop
-          const radius = 35; // Percentage
+          // Responsive radius: adjust based on screen size
+          const radiusPercent = 38; // Percentage - adjusted for better mobile spacing
           const position = {
-            x: `${50 + radius * Math.cos(angle)}%`,
-            y: `${50 + radius * Math.sin(angle)}%`
+            x: `${50 + radiusPercent * Math.cos(angle)}%`,
+            y: `${50 + radiusPercent * Math.sin(angle)}%`
           };
 
           return (
@@ -178,21 +178,11 @@ export default function EcosystemBuilder() {
                     y2={position.y}
                     stroke="rgba(255, 255, 255, 0.6)"
                     strokeWidth="2"
+                    strokeDasharray="0"
                     animate={{
                       opacity: isSelected ? 0.8 : 0.4,
                     }}
-                  />
-                  <motion.circle
-                    cx="50%"
-                    cy="50%"
-                    r="8"
-                    fill="rgba(255, 255, 255, 0.8)"
-                  />
-                  <motion.circle
-                    cx={position.x}
-                    cy={position.y}
-                    r="6"
-                    fill="rgba(255, 255, 255, 0.6)"
+                    initial={{ opacity: 0 }}
                   />
                 </motion.svg>
               )}
