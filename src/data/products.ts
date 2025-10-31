@@ -42,17 +42,18 @@ export const productData: Record<StepId, StepConfig> = {
       { id: "sf1000", name: "Ferrari SF1000 Edition", url: "https://www.thrustmaster.com/en-us/products/formula-wheel-add-on-ferrari-sf1000-edition/" },
       { id: "488-gt3", name: "Ferrari 488 GT3 Edition", url: "https://www.thrustmaster.com/en-us/products/488-gt3-wheel-add-on/" },
       { id: "open-wheel", name: "TM Open Wheel Add-On", url: "https://www.thrustmaster.com/en-us/products/tm-open-wheel-add-on/" },
-      { id: "599xx", name: "599XX EVO 30 Alcantara Edition", url: "https://www.thrustmaster.com/en-us/products/599xx-evo-30-wheel-add-on-alcantara/" }
+      { id: "599xx", name: "599XX EVO 30 Alcantara Edition", url: "https://www.thrustmaster.com/en-us/products/599xx-evo-30-wheel-add-on-alcantara/" },
+      { id: "hypercar", name: "HYPERCAR WHEEL ADD-ON", url: "https://www.thrustmaster.com/en-us/products/hypercar-wheel-add-on/" }
     ],
     compatibility: {
-      "t818": ["sf1000", "488-gt3", "open-wheel", "599xx"],
-      "t598": ["sf1000", "488-gt3", "open-wheel", "599xx"],
-      "t300": ["sf1000", "488-gt3", "open-wheel", "599xx"],
-      "tx": ["sf1000", "488-gt3", "open-wheel", "599xx"],
-      "ts-xw": ["sf1000", "488-gt3", "open-wheel", "599xx"],
-      "ts-pc": ["sf1000", "488-gt3", "open-wheel", "599xx"],
-      "t-gt-ii": ["sf1000", "488-gt3", "open-wheel", "599xx"],
-      "*": ["sf1000", "488-gt3", "open-wheel", "599xx"]
+      "t818": ["sf1000", "488-gt3", "open-wheel", "599xx", "hypercar"],
+      "t598": ["sf1000", "488-gt3", "open-wheel", "599xx", "hypercar"],
+      "t300": ["sf1000", "488-gt3", "open-wheel", "599xx", "hypercar"],
+      "tx": ["sf1000", "488-gt3", "open-wheel", "599xx", "hypercar"],
+      "ts-xw": ["sf1000", "488-gt3", "open-wheel", "599xx", "hypercar"],
+      "ts-pc": ["sf1000", "488-gt3", "open-wheel", "599xx", "hypercar"],
+      "t-gt-ii": ["sf1000", "488-gt3", "open-wheel", "599xx", "hypercar"],
+      "*": ["sf1000", "488-gt3", "open-wheel", "599xx", "hypercar"]
     }
   },
   pedals: {
@@ -62,7 +63,9 @@ export const productData: Record<StepId, StepConfig> = {
     position: { angle: 90 },
     products: [
       { id: "t-lcm", name: "T-LCM Pedals", url: "https://www.thrustmaster.com/en-us/products/t-lcm-pedals/" },
-      { id: "t3pa-pro", name: "T3PA-PRO Add-On", url: "https://www.thrustmaster.com/en-us/products/t3pa-add-on/" }
+      { id: "t3pa", name: "T3PA Add-On", url: "https://www.thrustmaster.com/en-us/products/t3pa-add-on/" },
+      { id: "t3pa-pro", name: "T3PA-PRO Add-On", url: "https://www.thrustmaster.com/en-us/products/t3pa-pro-add-on/" },
+      { id: "t3pm", name: "T3PM Pedals", url: "https://www.thrustmaster.com/en-us/products/t3pm/" }
     ]
   },
   shifter_handbrake: {

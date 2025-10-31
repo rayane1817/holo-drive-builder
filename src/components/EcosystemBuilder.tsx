@@ -115,7 +115,7 @@ export default function EcosystemBuilder() {
       </div>
 
       {/* Ecosystem Container */}
-      <div className="relative w-full h-[600px] sm:h-[700px] md:h-[800px] flex items-center justify-center py-12 md:py-20 px-4">
+      <div className="relative w-full h-[800px] sm:h-[900px] md:h-[1000px] flex items-center justify-center py-16 md:py-24 px-4">
         {/* Center Hub - only show after wheelbase is selected */}
         {showCenterHub && centerProduct && (
           <motion.div
@@ -128,7 +128,7 @@ export default function EcosystemBuilder() {
             <div className="relative">
               <div className="absolute inset-0 rounded-full bg-white/20 blur-3xl" style={{ width: "240px", height: "240px", left: "-45px", top: "-45px" }} />
               <motion.div
-                className="relative w-[150px] h-[150px] rounded-full bg-white/10 backdrop-blur-md border-4 border-white/50 shadow-2xl flex items-center justify-center"
+                className="relative w-[150px] h-[150px] rounded-full bg-white/10 backdrop-blur-md border-4 border-white/50 shadow-[0_0_40px_rgba(255,255,255,0.4)] flex items-center justify-center"
               >
                 {images[centerProduct.id] ? (
                   <img src={images[centerProduct.id]} alt={centerProduct.name} className="w-28 h-28 object-contain" />
@@ -153,12 +153,23 @@ export default function EcosystemBuilder() {
           const angleStep = (2 * Math.PI) / totalProducts;
           const angle = index * angleStep - Math.PI / 2; // Start from top
           
-          // Responsive radius: adjust based on screen size
-          const radiusPercent = 38; // Percentage - adjusted for better mobile spacing
-          const position = {
-            x: `${50 + radiusPercent * Math.cos(angle)}%`,
-            y: `${50 + radiusPercent * Math.sin(angle)}%`
-          };
+          // Optimized radius for better spacing and visibility
+          const radiusPercent = 32; // Percentage - balanced for all screen sizes
+          
+          // Calculate node position
+          const nodeX = 50 + radiusPercent * Math.cos(angle);
+          const nodeY = 50 + radiusPercent * Math.sin(angle);
+          
+          // Calculate edge connection points for lines
+          // Hub radius: ~10% of container, Node radius: ~6% of container
+          const hubRadius = 10;
+          const nodeRadius = 6;
+          const hubEdgeX = 50 + hubRadius * Math.cos(angle);
+          const hubEdgeY = 50 + hubRadius * Math.sin(angle);
+          const nodeEdgeX = nodeX - nodeRadius * Math.cos(angle);
+          const nodeEdgeY = nodeY - nodeRadius * Math.sin(angle);
+          
+          const position = { x: `${nodeX}%`, y: `${nodeY}%` };
 
           return (
             <div key={product.id}>
@@ -172,16 +183,17 @@ export default function EcosystemBuilder() {
                   style={{ zIndex: 5 }}
                 >
                   <motion.line
-                    x1="50%"
-                    y1="50%"
-                    x2={position.x}
-                    y2={position.y}
+                    x1={`${hubEdgeX}%`}
+                    y1={`${hubEdgeY}%`}
+                    x2={`${nodeEdgeX}%`}
+                    y2={`${nodeEdgeY}%`}
                     stroke="rgba(255, 255, 255, 0.6)"
                     strokeWidth="2"
-                    strokeDasharray="0"
                     animate={{
                       opacity: isSelected ? 0.8 : 0.4,
+                      strokeWidth: isSelected ? 3 : 2,
                     }}
+                    transition={{ duration: 0.3 }}
                     initial={{ opacity: 0 }}
                   />
                 </motion.svg>
@@ -223,11 +235,17 @@ export default function EcosystemBuilder() {
                         setSelection(state.activeStep, product.id);
                       }
                     }}
+                    animate={{
+                      scale: isSelected ? 1.05 : 1,
+                    }}
+                    transition={{ duration: 0.3 }}
                     className={`
                       relative w-[100px] h-[100px] md:w-[120px] md:h-[120px] rounded-full cursor-pointer
                       flex items-center justify-center transition-all duration-300 overflow-hidden
                       bg-white/10 backdrop-blur-md border-2
-                      ${isSelected ? "border-white shadow-[0_0_30px_rgba(255,255,255,0.6)]" : "border-white/40 hover:border-white/60"}
+                      ${isSelected 
+                        ? "border-white shadow-[0_0_30px_rgba(147,51,234,0.5)]" 
+                        : "border-white/40 hover:border-white/60 hover:shadow-[0_0_20px_rgba(255,255,255,0.3)]"}
                     `}
                   >
                     {images[product.id] ? (
