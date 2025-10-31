@@ -26,10 +26,10 @@ export const productData: Record<StepId, StepConfig> = {
     products: [
       { id: "t818", name: "T818", url: "https://www.thrustmaster.com/en-us/products/t818/" },
       { id: "t598", name: "T598", url: "https://www.thrustmaster.com/en-us/products/t598/" },
-      { id: "t300", name: "T300 Racing Servo Base", url: "https://www.thrustmaster.com/en-us/products/t300-racing-wheel-servo-base/" },
-      { id: "tx", name: "TX Racing Wheel Servo Base", url: "https://www.thrustmaster.com/en-us/products/tx-racing-wheel-servo-base/" },
-      { id: "ts-xw", name: "TS-XW Racer", url: "https://www.thrustmaster.com/en-us/products/ts-xw-racer-sparco-p310-competition-mod/" },
-      { id: "ts-pc", name: "TS-PC Racer", url: "https://www.thrustmaster.com/en-us/products/ts-pc-racer/" },
+      { id: "t300", name: "T300", url: "https://www.thrustmaster.com/en-us/products/t300-racing-wheel-servo-base/" },
+      { id: "tx", name: "TX", url: "https://www.thrustmaster.com/en-us/products/tx-racing-wheel-servo-base/" },
+      { id: "ts-xw", name: "TS-XW", url: "https://www.thrustmaster.com/en-us/products/ts-xw-racer-sparco-p310-competition-mod/" },
+      { id: "ts-pc", name: "TS-PC", url: "https://www.thrustmaster.com/en-us/products/ts-pc-racer/" },
       { id: "t-gt-ii", name: "T-GT II", url: "https://www.thrustmaster.com/en-us/products/t-gt-ii/" }
     ]
   },
@@ -39,11 +39,11 @@ export const productData: Record<StepId, StepConfig> = {
     required: true,
     position: { angle: 0 },
     products: [
-      { id: "sf1000", name: "Ferrari SF1000 Edition", url: "https://www.thrustmaster.com/en-us/products/formula-wheel-add-on-ferrari-sf1000-edition/" },
-      { id: "488-gt3", name: "Ferrari 488 GT3 Edition", url: "https://www.thrustmaster.com/en-us/products/488-gt3-wheel-add-on/" },
-      { id: "open-wheel", name: "TM Open Wheel Add-On", url: "https://www.thrustmaster.com/en-us/products/tm-open-wheel-add-on/" },
-      { id: "599xx", name: "599XX EVO 30 Alcantara Edition", url: "https://www.thrustmaster.com/en-us/products/599xx-evo-30-wheel-add-on-alcantara/" },
-      { id: "hypercar", name: "HYPERCAR WHEEL ADD-ON", url: "https://www.thrustmaster.com/en-us/products/hypercar-wheel-add-on/" }
+      { id: "sf1000", name: "Ferrari SF1000", url: "https://www.thrustmaster.com/en-us/products/formula-wheel-add-on-ferrari-sf1000-edition/" },
+      { id: "488-gt3", name: "Ferrari 488 GT3", url: "https://www.thrustmaster.com/en-us/products/488-gt3-wheel-add-on/" },
+      { id: "open-wheel", name: "TM Open Wheel", url: "https://www.thrustmaster.com/en-us/products/tm-open-wheel-add-on/" },
+      { id: "599xx", name: "599XX EVO 30 Alcantara", url: "https://www.thrustmaster.com/en-us/products/599xx-evo-30-wheel-add-on-alcantara/" },
+      { id: "hypercar", name: "HYPERCAR WHEEL", url: "https://www.thrustmaster.com/en-us/products/hypercar-wheel-add-on/" }
     ],
     compatibility: {
       "t818": ["sf1000", "488-gt3", "open-wheel", "599xx", "hypercar"],
@@ -62,20 +62,21 @@ export const productData: Record<StepId, StepConfig> = {
     required: false,
     position: { angle: 90 },
     products: [
-      { id: "t-lcm", name: "T-LCM Pedals", url: "https://www.thrustmaster.com/en-us/products/t-lcm-pedals/" },
-      { id: "t3pa", name: "T3PA Add-On", url: "https://www.thrustmaster.com/en-us/products/t3pa-add-on/" },
-      { id: "t3pa-pro", name: "T3PA-PRO Add-On", url: "https://www.thrustmaster.com/en-us/products/t3pa-pro-add-on/" },
-      { id: "t3pm", name: "T3PM Pedals", url: "https://www.thrustmaster.com/en-us/products/t3pm/" }
+      { id: "t-lcm", name: "T-LCM", url: "https://www.thrustmaster.com/en-us/products/t-lcm-pedals/" },
+      { id: "t3pa", name: "T3PA", url: "https://www.thrustmaster.com/en-us/products/t3pa-add-on/" },
+      { id: "t3pa-pro", name: "T3PA-PRO", url: "https://www.thrustmaster.com/en-us/products/t3pa-pro-add-on/" },
+      { id: "t3pm", name: "T3PM", url: "https://www.thrustmaster.com/en-us/products/t3pm/" }
     ]
   },
   shifter_handbrake: {
     id: "shifter_handbrake",
     label: "Shifter / Handbrake",
     required: false,
+    multi: true,
     position: { angle: 180 },
     products: [
-      { id: "th8a", name: "TH8A Shifter", url: "https://www.thrustmaster.com/en-us/products/th8a-shifter-add-on/" },
-      { id: "tss", name: "TSS Handbrake Sparco Mod+", url: "https://www.thrustmaster.com/en-us/products/tss-handbrake-sparco-mod/" }
+      { id: "th8a", name: "TH8A", url: "https://www.thrustmaster.com/en-us/products/th8a-shifter-add-on/" },
+      { id: "tss", name: "TSS Handbrake Sparco", url: "https://www.thrustmaster.com/en-us/products/tss-handbrake-sparco-mod/" }
     ]
   },
   accessories: {
@@ -86,7 +87,7 @@ export const productData: Record<StepId, StepConfig> = {
     position: { angle: 270 },
     products: [
       { id: "bt-led", name: "BT LED Display", url: "https://www.thrustmaster.com/en-us/products/bt-led-display/" },
-      { id: "quick-release", name: "Quick Release Adapter", url: "https://www.thrustmaster.com/en-us/products/thrustmaster-quick-release-adapter/" }
+      { id: "quick-release", name: "Quick Release", url: "https://www.thrustmaster.com/en-us/products/thrustmaster-quick-release-adapter/" }
     ]
   }
 };

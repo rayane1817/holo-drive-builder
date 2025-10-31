@@ -105,13 +105,6 @@ export default function EcosystemBuilder() {
            activeStepConfig.id === "shifter_handbrake" ? "Choose Shifter/Handbrake" :
            "Choose Accessories"}
         </h2>
-        {centerProduct && (
-          <div className="mt-2 bg-white/5 backdrop-blur-sm inline-block px-6 py-3 rounded-xl border border-white/20">
-            <span className="text-2xl md:text-3xl font-bold uppercase tracking-wide text-white">
-              {centerProduct.name}
-            </span>
-          </div>
-        )}
       </div>
 
       {/* Ecosystem Container */}
