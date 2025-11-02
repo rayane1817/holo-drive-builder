@@ -146,10 +146,10 @@ export default function EcosystemBuilder() {
           // Calculate radial position with responsive radius
           const totalProducts = displayProducts.length;
           const angleStep = (2 * Math.PI) / totalProducts;
-          const angle = index * angleStep - Math.PI / 2; // Start from top
+          const angle = index * angleStep - Math.PI / 2 - 0.05; // Start from top, slightly offset left for better centering
           
           // Optimized radius for better spacing and visibility
-          const radiusPercent = window.innerWidth >= 768 ? 25 : 32; // Smaller on desktop, current on mobile
+          const radiusPercent = window.innerWidth >= 768 ? 24 : 30; // Smaller on desktop, centered on mobile
           
           // Calculate node position
           const nodeX = 50 + radiusPercent * Math.cos(angle);
@@ -284,7 +284,7 @@ export default function EcosystemBuilder() {
               }}
               className="px-4 md:px-6 py-2 md:py-3 rounded-xl bg-yellow-500/20 hover:bg-yellow-500/30 text-white font-semibold uppercase tracking-wider transition-all backdrop-blur-sm border border-yellow-500/40 text-sm md:text-base"
             >
-              Skip
+              {currentStepIndex < steps.length - 1 ? "Skip" : "Finish"}
             </button>
             
             {hasCurrentSelection() && (
