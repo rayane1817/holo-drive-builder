@@ -24,9 +24,13 @@ export default function EcosystemBuilder() {
 
   useEffect(() => {
     if (state.selections.wheelbase && state.selections.wheel) {
-      if (!isWheelCompatible(state.selections.wheel, state.selections.wheelbase)) {
-        setSelection("wheel", undefined);
-        toast.error("Selected wheel is not compatible with this wheelbase");
+      const wheelIds = Array.isArray(state.selections.wheel) ? state.selections.wheel : [state.selections.wheel];
+      const incompatibleWheels = wheelIds.filter(wheelId => !isWheelCompatible(wheelId, state.selections.wheelbase));
+      
+      if (incompatibleWheels.length > 0) {
+        const remaining = wheelIds.filter(wheelId => !incompatibleWheels.includes(wheelId));
+        setSelection("wheel", remaining.length > 0 ? remaining : undefined);
+        toast.error("Some selected wheels are not compatible with this wheelbase");
       }
     }
   }, [state.selections.wheelbase]);
@@ -260,7 +264,7 @@ export default function EcosystemBuilder() {
                       onClick={(e) => e.stopPropagation()}
                       className="inline-flex items-center gap-1 text-xs text-white/80 hover:text-white transition-colors"
                     >
-                      <span>Info</span>
+                      <span>${product.price}</span>
                       <ExternalLink className="w-3 h-3" />
                     </a>
                   </div>
@@ -320,7 +324,7 @@ export default function EcosystemBuilder() {
               }}
               className="px-4 md:px-6 py-2 md:py-3 rounded-xl bg-yellow-500/20 hover:bg-yellow-500/30 text-white font-semibold uppercase tracking-wider transition-all backdrop-blur-sm border border-yellow-500/40 text-sm md:text-base"
             >
-              Skip This
+              Skip
             </button>
             
             {hasCurrentSelection() && (
@@ -354,7 +358,7 @@ export default function EcosystemBuilder() {
             className="px-4 md:px-8 py-2 md:py-4 rounded-xl bg-white/20 hover:bg-white/30 text-white font-semibold uppercase tracking-wider transition-all backdrop-blur-sm border border-white/40 shadow-[0_0_20px_rgba(255,255,255,0.3)] disabled:opacity-40 disabled:cursor-not-allowed disabled:shadow-none text-sm md:text-base"
           >
             {currentStepIndex < steps.length - 1 
-              ? (hasCurrentSelection() ? "Continue" : "Select to Continue")
+              ? (hasCurrentSelection() ? "Continue" : "Select")
               : "Finish & Review"}
           </button>
         )}
@@ -387,11 +391,27 @@ export default function EcosystemBuilder() {
                 />
               )}
               {state.selections.wheel && (
-                <BuildItem 
-                  label="Wheel" 
-                  product={steps[1].products.find(p => p.id === state.selections.wheel)} 
-                  image={state.selections.wheel ? images[state.selections.wheel] : undefined}
-                />
+                <>
+                  {Array.isArray(state.selections.wheel) ? (
+                    state.selections.wheel.map(wheelId => {
+                      const product = steps[1].products.find(p => p.id === wheelId);
+                      return product ? (
+                        <BuildItem 
+                          key={wheelId}
+                          label="Wheel" 
+                          product={product}
+                          image={images[wheelId]}
+                        />
+                      ) : null;
+                    })
+                  ) : (
+                    <BuildItem 
+                      label="Wheel" 
+                      product={steps[1].products.find(p => p.id === state.selections.wheel)} 
+                      image={state.selections.wheel ? images[state.selections.wheel] : undefined}
+                    />
+                  )}
+                </>
               )}
             </div>
             
@@ -407,11 +427,27 @@ export default function EcosystemBuilder() {
                   />
                 )}
                 {state.selections.shifter_handbrake && (
-                  <BuildItem 
-                    label="Shifter/Handbrake" 
-                    product={steps[3].products.find(p => p.id === state.selections.shifter_handbrake)} 
-                    image={state.selections.shifter_handbrake ? images[state.selections.shifter_handbrake] : undefined}
-                  />
+                  <>
+                    {Array.isArray(state.selections.shifter_handbrake) ? (
+                      state.selections.shifter_handbrake.map(shId => {
+                        const product = steps[3].products.find(p => p.id === shId);
+                        return product ? (
+                          <BuildItem 
+                            key={shId}
+                            label="Shifter/Handbrake" 
+                            product={product}
+                            image={images[shId]}
+                          />
+                        ) : null;
+                      })
+                    ) : (
+                      <BuildItem 
+                        label="Shifter/Handbrake" 
+                        product={steps[3].products.find(p => p.id === state.selections.shifter_handbrake)} 
+                        image={state.selections.shifter_handbrake ? images[state.selections.shifter_handbrake] : undefined}
+                      />
+                    )}
+                  </>
                 )}
                 {state.selections.accessories && Array.isArray(state.selections.accessories) && state.selections.accessories.length > 0 && (
                   <>
@@ -430,6 +466,12 @@ export default function EcosystemBuilder() {
                 )}
               </div>
             )}
+            
+            {/* Price Summary */}
+            <div className="mb-6 p-4 bg-white/10 rounded-xl border border-white/20">
+              <h3 className="text-xl font-bold text-white mb-2">Total Price</h3>
+              <p className="text-3xl font-bold text-white">${calculateTotalPrice(state.selections)}</p>
+            </div>
             
             {/* Action buttons */}
             <div className="flex flex-col sm:flex-row gap-3 md:gap-4">
@@ -470,49 +512,139 @@ const BuildItem = ({ label, product, image }: { label: string, product?: Product
         <p className="text-white font-medium">{product.name}</p>
         <p className="text-white/60 text-sm">{label}</p>
       </div>
-      <a 
-        href={product.url} 
-        target="_blank" 
-        rel="noopener noreferrer"
-        className="text-blue-400 hover:text-blue-300"
-      >
-        <ExternalLink className="w-5 h-5" />
-      </a>
+      <div className="flex items-center gap-3">
+        <p className="text-white font-semibold">${product.price}</p>
+        <a 
+          href={product.url} 
+          target="_blank" 
+          rel="noopener noreferrer"
+          className="text-blue-400 hover:text-blue-300"
+        >
+          <ExternalLink className="w-5 h-5" />
+        </a>
+      </div>
     </div>
   );
+};
+
+// Helper function to calculate total price
+const calculateTotalPrice = (selections: Record<string, string | string[] | undefined>): number => {
+  let total = 0;
+  
+  if (selections.wheelbase) {
+    const product = steps[0].products.find(p => p.id === selections.wheelbase);
+    if (product) total += product.price;
+  }
+  
+  if (selections.wheel) {
+    if (Array.isArray(selections.wheel)) {
+      selections.wheel.forEach(wheelId => {
+        const product = steps[1].products.find(p => p.id === wheelId);
+        if (product) total += product.price;
+      });
+    } else {
+      const product = steps[1].products.find(p => p.id === selections.wheel);
+      if (product) total += product.price;
+    }
+  }
+  
+  if (selections.pedals) {
+    const product = steps[2].products.find(p => p.id === selections.pedals);
+    if (product) total += product.price;
+  }
+  
+  if (selections.shifter_handbrake) {
+    if (Array.isArray(selections.shifter_handbrake)) {
+      selections.shifter_handbrake.forEach(shId => {
+        const product = steps[3].products.find(p => p.id === shId);
+        if (product) total += product.price;
+      });
+    } else {
+      const product = steps[3].products.find(p => p.id === selections.shifter_handbrake);
+      if (product) total += product.price;
+    }
+  }
+  
+  if (selections.accessories && Array.isArray(selections.accessories)) {
+    selections.accessories.forEach(accId => {
+      const product = steps[4].products.find(p => p.id === accId);
+      if (product) total += product.price;
+    });
+  }
+  
+  return total;
 };
 
 // Helper function to generate formatted build list
 const generateBuildList = (selections: Record<string, string | string[] | undefined>): string => {
   let list = "🏁 My Thrustmaster Build:\n\n";
+  let totalPrice = 0;
   
   if (selections.wheelbase) {
     const product = steps[0].products.find(p => p.id === selections.wheelbase);
-    if (product) list += `Wheelbase: ${product.name}\n${product.url}\n\n`;
+    if (product) {
+      list += `Wheelbase: ${product.name} - $${product.price}\n${product.url}\n\n`;
+      totalPrice += product.price;
+    }
   }
   
   if (selections.wheel) {
-    const product = steps[1].products.find(p => p.id === selections.wheel);
-    if (product) list += `Wheel: ${product.name}\n${product.url}\n\n`;
+    if (Array.isArray(selections.wheel)) {
+      selections.wheel.forEach(wheelId => {
+        const product = steps[1].products.find(p => p.id === wheelId);
+        if (product) {
+          list += `Wheel: ${product.name} - $${product.price}\n${product.url}\n\n`;
+          totalPrice += product.price;
+        }
+      });
+    } else {
+      const product = steps[1].products.find(p => p.id === selections.wheel);
+      if (product) {
+        list += `Wheel: ${product.name} - $${product.price}\n${product.url}\n\n`;
+        totalPrice += product.price;
+      }
+    }
   }
   
   if (selections.pedals) {
     const product = steps[2].products.find(p => p.id === selections.pedals);
-    if (product) list += `Pedals: ${product.name}\n${product.url}\n\n`;
+    if (product) {
+      list += `Pedals: ${product.name} - $${product.price}\n${product.url}\n\n`;
+      totalPrice += product.price;
+    }
   }
   
   if (selections.shifter_handbrake) {
-    const product = steps[3].products.find(p => p.id === selections.shifter_handbrake);
-    if (product) list += `Shifter/Handbrake: ${product.name}\n${product.url}\n\n`;
+    if (Array.isArray(selections.shifter_handbrake)) {
+      selections.shifter_handbrake.forEach(shId => {
+        const product = steps[3].products.find(p => p.id === shId);
+        if (product) {
+          list += `Shifter/Handbrake: ${product.name} - $${product.price}\n${product.url}\n\n`;
+          totalPrice += product.price;
+        }
+      });
+    } else {
+      const product = steps[3].products.find(p => p.id === selections.shifter_handbrake);
+      if (product) {
+        list += `Shifter/Handbrake: ${product.name} - $${product.price}\n${product.url}\n\n`;
+        totalPrice += product.price;
+      }
+    }
   }
   
   if (selections.accessories && Array.isArray(selections.accessories) && selections.accessories.length) {
     list += "Accessories:\n";
     selections.accessories.forEach(accId => {
       const product = steps[4].products.find(p => p.id === accId);
-      if (product) list += `- ${product.name}\n  ${product.url}\n`;
+      if (product) {
+        list += `- ${product.name} - $${product.price}\n  ${product.url}\n`;
+        totalPrice += product.price;
+      }
     });
+    list += "\n";
   }
+  
+  list += `💰 Total Price: $${totalPrice}`;
   
   return list;
 };

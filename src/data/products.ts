@@ -3,6 +3,7 @@ export type Product = {
   name: string;
   url: string;
   image?: string;
+  price: number;
 };
 
 export type StepId = "wheelbase" | "wheel" | "pedals" | "shifter_handbrake" | "accessories";
@@ -24,26 +25,27 @@ export const productData: Record<StepId, StepConfig> = {
     required: true,
     position: { angle: 0 },
     products: [
-      { id: "t818", name: "T818", url: "https://www.thrustmaster.com/en-us/products/t818/" },
-      { id: "t598", name: "T598", url: "https://www.thrustmaster.com/en-us/products/t598/" },
-      { id: "t300", name: "T300", url: "https://www.thrustmaster.com/en-us/products/t300-racing-wheel-servo-base/" },
-      { id: "tx", name: "TX", url: "https://www.thrustmaster.com/en-us/products/tx-racing-wheel-servo-base/" },
-      { id: "ts-xw", name: "TS-XW", url: "https://www.thrustmaster.com/en-us/products/ts-xw-racer-sparco-p310-competition-mod/" },
-      { id: "ts-pc", name: "TS-PC", url: "https://www.thrustmaster.com/en-us/products/ts-pc-racer/" },
-      { id: "t-gt-ii", name: "T-GT II", url: "https://www.thrustmaster.com/en-us/products/t-gt-ii/" }
+      { id: "t818", name: "T818", url: "https://www.thrustmaster.com/en-us/products/t818/", price: 799 },
+      { id: "t598", name: "T598", url: "https://www.thrustmaster.com/en-us/products/t598/", price: 599 },
+      { id: "t300", name: "T300", url: "https://www.thrustmaster.com/en-us/products/t300-racing-wheel-servo-base/", price: 399 },
+      { id: "tx", name: "TX", url: "https://www.thrustmaster.com/en-us/products/tx-racing-wheel-servo-base/", price: 399 },
+      { id: "ts-xw", name: "TS-XW", url: "https://www.thrustmaster.com/en-us/products/ts-xw-racer-sparco-p310-competition-mod/", price: 599 },
+      { id: "ts-pc", name: "TS-PC", url: "https://www.thrustmaster.com/en-us/products/ts-pc-racer/", price: 499 },
+      { id: "t-gt-ii", name: "T-GT II", url: "https://www.thrustmaster.com/en-us/products/t-gt-ii/", price: 699 }
     ]
   },
   wheel: {
     id: "wheel",
     label: "Wheel Add-On",
     required: true,
+    multi: true,
     position: { angle: 0 },
     products: [
-      { id: "sf1000", name: "Ferrari SF1000", url: "https://www.thrustmaster.com/en-us/products/formula-wheel-add-on-ferrari-sf1000-edition/" },
-      { id: "488-gt3", name: "Ferrari 488 GT3", url: "https://www.thrustmaster.com/en-us/products/488-gt3-wheel-add-on/" },
-      { id: "open-wheel", name: "TM Open Wheel", url: "https://www.thrustmaster.com/en-us/products/tm-open-wheel-add-on/" },
-      { id: "599xx", name: "599XX EVO 30 Alcantara", url: "https://www.thrustmaster.com/en-us/products/599xx-evo-30-wheel-add-on-alcantara/" },
-      { id: "hypercar", name: "HYPERCAR WHEEL", url: "https://www.thrustmaster.com/en-us/products/hypercar-wheel-add-on/" }
+      { id: "sf1000", name: "Ferrari SF1000", url: "https://www.thrustmaster.com/en-us/products/formula-wheel-add-on-ferrari-sf1000-edition/", price: 399 },
+      { id: "488-gt3", name: "Ferrari 488 GT3", url: "https://www.thrustmaster.com/en-us/products/488-gt3-wheel-add-on/", price: 199 },
+      { id: "open-wheel", name: "TM Open Wheel", url: "https://www.thrustmaster.com/en-us/products/tm-open-wheel-add-on/", price: 199 },
+      { id: "599xx", name: "599XX EVO 30 Alcantara", url: "https://www.thrustmaster.com/en-us/products/599xx-evo-30-wheel-add-on-alcantara/", price: 199 },
+      { id: "hypercar", name: "HYPERCAR WHEEL", url: "https://www.thrustmaster.com/en-us/products/hypercar-wheel-add-on/", price: 249 }
     ],
     compatibility: {
       "t818": ["sf1000", "488-gt3", "open-wheel", "599xx", "hypercar"],
@@ -62,10 +64,10 @@ export const productData: Record<StepId, StepConfig> = {
     required: false,
     position: { angle: 90 },
     products: [
-      { id: "t-lcm", name: "T-LCM", url: "https://www.thrustmaster.com/en-us/products/t-lcm-pedals/" },
-      { id: "t3pa", name: "T3PA", url: "https://www.thrustmaster.com/en-us/products/t3pa-add-on/" },
-      { id: "t3pa-pro", name: "T3PA-PRO", url: "https://www.thrustmaster.com/en-us/products/t3pa-pro-add-on/" },
-      { id: "t3pm", name: "T3PM", url: "https://www.thrustmaster.com/en-us/products/t3pm/" }
+      { id: "t-lcm", name: "T-LCM", url: "https://www.thrustmaster.com/en-us/products/t-lcm-pedals/", price: 299 },
+      { id: "t3pa", name: "T3PA", url: "https://www.thrustmaster.com/en-us/products/t3pa-add-on/", price: 149 },
+      { id: "t3pa-pro", name: "T3PA-PRO", url: "https://www.thrustmaster.com/en-us/products/t3pa-pro-add-on/", price: 199 },
+      { id: "t3pm", name: "T3PM", url: "https://www.thrustmaster.com/en-us/products/t3pm/", price: 399 }
     ]
   },
   shifter_handbrake: {
@@ -75,8 +77,8 @@ export const productData: Record<StepId, StepConfig> = {
     multi: true,
     position: { angle: 180 },
     products: [
-      { id: "th8a", name: "TH8A", url: "https://www.thrustmaster.com/en-us/products/th8a-shifter-add-on/" },
-      { id: "tss", name: "TSS Handbrake Sparco", url: "https://www.thrustmaster.com/en-us/products/tss-handbrake-sparco-mod/" }
+      { id: "th8a", name: "TH8A", url: "https://www.thrustmaster.com/en-us/products/th8a-shifter-add-on/", price: 199 },
+      { id: "tss", name: "TSS Handbrake Sparco", url: "https://www.thrustmaster.com/en-us/products/tss-handbrake-sparco-mod/", price: 149 }
     ]
   },
   accessories: {
@@ -86,8 +88,8 @@ export const productData: Record<StepId, StepConfig> = {
     multi: true,
     position: { angle: 270 },
     products: [
-      { id: "bt-led", name: "BT LED Display", url: "https://www.thrustmaster.com/en-us/products/bt-led-display/" },
-      { id: "quick-release", name: "Quick Release", url: "https://www.thrustmaster.com/en-us/products/thrustmaster-quick-release-adapter/" }
+      { id: "bt-led", name: "BT LED Display", url: "https://www.thrustmaster.com/en-us/products/bt-led-display/", price: 119 },
+      { id: "quick-release", name: "Quick Release", url: "https://www.thrustmaster.com/en-us/products/thrustmaster-quick-release-adapter/", price: 59 }
     ]
   }
 };
