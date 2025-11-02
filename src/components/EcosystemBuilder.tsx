@@ -72,12 +72,28 @@ export default function EcosystemBuilder() {
   const canContinue = () => {
     const step = steps[currentStepIndex];
     if (!step) return false;
-    // For required steps, must have selection
+    // Can always continue to next page if there are more pages
+    if (currentPage < totalPages - 1) return true;
+    // For required steps, must have selection to move to next step
     if (step.required) {
       return hasCurrentSelection();
     }
     // Optional steps can always continue
     return true;
+  };
+
+  const handleContinue = () => {
+    // If there are more pages in current step, go to next page
+    if (currentPage < totalPages - 1) {
+      setCurrentPage(currentPage + 1);
+    } else {
+      // Move to next step or show summary
+      if (currentStepIndex < steps.length - 1) {
+        goToStep(currentStepIndex + 1);
+      } else {
+        setShowSummary(true);
+      }
+    }
   };
 
   const goToStep = (index: number) => {
@@ -126,24 +142,10 @@ export default function EcosystemBuilder() {
            "Choose Accessories"}
         </h2>
         {totalPages > 1 && (
-          <div className="mt-2 flex items-center gap-2">
-            <button
-              onClick={() => setCurrentPage(p => Math.max(0, p - 1))}
-              disabled={currentPage === 0}
-              className="px-3 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-white text-sm disabled:opacity-40 disabled:cursor-not-allowed transition-all backdrop-blur-sm border border-white/30"
-            >
-              ← Prev
-            </button>
+          <div className="mt-2">
             <span className="text-sm text-white/80">
               Page {currentPage + 1} of {totalPages}
             </span>
-            <button
-              onClick={() => setCurrentPage(p => Math.min(totalPages - 1, p + 1))}
-              disabled={currentPage === totalPages - 1}
-              className="px-3 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-white text-sm disabled:opacity-40 disabled:cursor-not-allowed transition-all backdrop-blur-sm border border-white/30"
-            >
-              Next →
-            </button>
           </div>
         )}
       </div>
@@ -314,29 +316,19 @@ export default function EcosystemBuilder() {
             <button
               onClick={() => {
                 setSelection(state.activeStep, undefined);
-                if (currentStepIndex < steps.length - 1) {
-                  goToStep(currentStepIndex + 1);
-                } else {
-                  setShowSummary(true);
-                }
+                handleContinue();
               }}
               className="px-4 md:px-6 py-2 md:py-3 rounded-xl bg-yellow-500/20 hover:bg-yellow-500/30 text-white font-semibold uppercase tracking-wider transition-all backdrop-blur-sm border border-yellow-500/40 text-sm md:text-base"
             >
-              {currentStepIndex < steps.length - 1 ? "Skip" : "Finish"}
+              {currentPage < totalPages - 1 ? "Skip & Next Page" : (currentStepIndex < steps.length - 1 ? "Skip" : "Finish")}
             </button>
             
             {hasCurrentSelection() && (
               <button
-                onClick={() => {
-                  if (currentStepIndex < steps.length - 1) {
-                    goToStep(currentStepIndex + 1);
-                  } else {
-                    setShowSummary(true);
-                  }
-                }}
+                onClick={handleContinue}
                 className="px-4 md:px-6 py-2 md:py-3 rounded-xl bg-green-500/20 hover:bg-green-500/30 text-white font-semibold uppercase tracking-wider transition-all backdrop-blur-sm border border-green-500/40 text-sm md:text-base"
               >
-                {currentStepIndex < steps.length - 1 ? "Continue" : "Finish"}
+                {currentPage < totalPages - 1 ? "Next Page" : (currentStepIndex < steps.length - 1 ? "Continue" : "Finish")}
               </button>
             )}
           </>
@@ -346,18 +338,14 @@ export default function EcosystemBuilder() {
         {activeStepConfig.required && (
           <button
             disabled={!canContinue()}
-            onClick={() => {
-              if (currentStepIndex < steps.length - 1) {
-                goToStep(currentStepIndex + 1);
-              } else {
-                setShowSummary(true);
-              }
-            }}
+            onClick={handleContinue}
             className="px-4 md:px-8 py-2 md:py-4 rounded-xl bg-white/20 hover:bg-white/30 text-white font-semibold uppercase tracking-wider transition-all backdrop-blur-sm border border-white/40 disabled:opacity-40 disabled:cursor-not-allowed text-sm md:text-base"
           >
-            {currentStepIndex < steps.length - 1 
-              ? (hasCurrentSelection() ? "Continue" : "Select")
-              : "Finish"}
+            {currentPage < totalPages - 1 
+              ? "Next Page"
+              : (currentStepIndex < steps.length - 1 
+                ? (hasCurrentSelection() ? "Continue" : "Select")
+                : "Finish")}
           </button>
         )}
       </motion.div>
