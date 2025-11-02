@@ -19,6 +19,7 @@ export default function EcosystemBuilder() {
   const allProducts = steps.flatMap(s => s.products);
   const images = useProductImages(allProducts);
   const [showSummary, setShowSummary] = useState(false);
+  const [currentPage, setCurrentPage] = useState(0);
   
   const currentStepIndex = steps.findIndex(s => s.id === state.activeStep);
 
@@ -86,10 +87,26 @@ export default function EcosystemBuilder() {
   };
 
   const activeStepConfig = steps.find(s => s.id === state.activeStep);
-  const displayProducts = getFilteredProducts(state.activeStep);
+  const allDisplayProducts = getFilteredProducts(state.activeStep);
+  
+  // Split products into pages of max 7 items
+  const MAX_PRODUCTS_PER_PAGE = 7;
+  const productPages: Product[][] = [];
+  for (let i = 0; i < allDisplayProducts.length; i += MAX_PRODUCTS_PER_PAGE) {
+    productPages.push(allDisplayProducts.slice(i, i + MAX_PRODUCTS_PER_PAGE));
+  }
+  
+  const displayProducts = productPages[currentPage] || [];
+  const totalPages = productPages.length;
+  
   const centerProduct = hasWheelbaseSelection
     ? steps.find(s => s.id === "wheelbase")?.products.find(p => p.id === state.selections.wheelbase)
     : null;
+  
+  // Reset page when step changes
+  useEffect(() => {
+    setCurrentPage(0);
+  }, [state.activeStep]);
 
   if (!activeStepConfig) return null;
 
@@ -108,6 +125,27 @@ export default function EcosystemBuilder() {
            activeStepConfig.id === "shifter_handbrake" ? "Choose Shifter/Handbrake" :
            "Choose Accessories"}
         </h2>
+        {totalPages > 1 && (
+          <div className="mt-2 flex items-center gap-2">
+            <button
+              onClick={() => setCurrentPage(p => Math.max(0, p - 1))}
+              disabled={currentPage === 0}
+              className="px-3 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-white text-sm disabled:opacity-40 disabled:cursor-not-allowed transition-all backdrop-blur-sm border border-white/30"
+            >
+              ← Prev
+            </button>
+            <span className="text-sm text-white/80">
+              Page {currentPage + 1} of {totalPages}
+            </span>
+            <button
+              onClick={() => setCurrentPage(p => Math.min(totalPages - 1, p + 1))}
+              disabled={currentPage === totalPages - 1}
+              className="px-3 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-white text-sm disabled:opacity-40 disabled:cursor-not-allowed transition-all backdrop-blur-sm border border-white/30"
+            >
+              Next →
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Ecosystem Container */}
