@@ -95,7 +95,6 @@ export default function EcosystemBuilder() {
 
   const isWheelbaseStep = state.activeStep === "wheelbase";
   const showCenterHub = hasWheelbaseSelection && !isWheelbaseStep;
-  const showConnectorLines = hasWheelbaseSelection && !isWheelbaseStep;
 
   return (
     <div className="relative w-full min-h-screen overflow-hidden">
@@ -123,9 +122,8 @@ export default function EcosystemBuilder() {
             style={{ left: "50%", top: "50%", transform: "translate(-50%, -50%)" }}
           >
             <div className="relative">
-              <div className="absolute inset-0 rounded-full bg-white/20 blur-3xl" style={{ width: "240px", height: "240px", left: "-45px", top: "-45px" }} />
               <motion.div
-                className="relative w-[150px] h-[150px] rounded-full bg-white/10 backdrop-blur-md border-4 border-white/50 shadow-[0_0_40px_rgba(255,255,255,0.4)] flex items-center justify-center"
+                className="relative w-[150px] h-[150px] rounded-full bg-white/10 backdrop-blur-md border-4 border-white/50 flex items-center justify-center"
               >
                 {images[centerProduct.id] ? (
                   <img src={images[centerProduct.id]} alt={centerProduct.name} className="w-28 h-28 object-contain" />
@@ -151,7 +149,7 @@ export default function EcosystemBuilder() {
           const angle = index * angleStep - Math.PI / 2; // Start from top
           
           // Optimized radius for better spacing and visibility
-          const radiusPercent = 32; // Percentage - balanced for all screen sizes
+          const radiusPercent = window.innerWidth >= 768 ? 25 : 32; // Smaller on desktop, current on mobile
           
           // Calculate node position
           const nodeX = 50 + radiusPercent * Math.cos(angle);
@@ -170,32 +168,6 @@ export default function EcosystemBuilder() {
 
           return (
             <div key={product.id}>
-              {/* Connector line - only show after wheelbase selection */}
-              {showConnectorLines && (
-                <motion.svg
-                  initial={{ pathLength: 0, opacity: 0 }}
-                  animate={{ pathLength: 1, opacity: 0.5 }}
-                  transition={{ duration: 0.8, delay }}
-                  className="absolute top-0 left-0 w-full h-full pointer-events-none"
-                  style={{ zIndex: 5 }}
-                >
-                  <motion.line
-                    x1={`${hubEdgeX}%`}
-                    y1={`${hubEdgeY}%`}
-                    x2={`${nodeEdgeX}%`}
-                    y2={`${nodeEdgeY}%`}
-                    stroke="rgba(255, 255, 255, 0.6)"
-                    strokeWidth="2"
-                    animate={{
-                      opacity: isSelected ? 0.8 : 0.4,
-                      strokeWidth: isSelected ? 3 : 2,
-                    }}
-                    transition={{ duration: 0.3 }}
-                    initial={{ opacity: 0 }}
-                  />
-                </motion.svg>
-              )}
-
               {/* Product node */}
               <motion.div
                 initial={{ scale: 0, opacity: 0 }}
@@ -205,18 +177,6 @@ export default function EcosystemBuilder() {
                 style={{ left: position.x, top: position.y, transform: "translate(-50%, -50%)", zIndex: 10 }}
               >
                 <div className="relative">
-                  {/* Glowing ring */}
-                  <motion.div
-                    className="absolute inset-0 rounded-full"
-                    style={{ width: "200px", height: "200px", left: "-40px", top: "-40px" }}
-                    animate={{
-                      boxShadow: isSelected
-                        ? ["0 0 30px rgba(255,255,255,0.4)", "0 0 50px rgba(255,255,255,0.7)", "0 0 30px rgba(255,255,255,0.4)"]
-                        : "0 0 20px rgba(255,255,255,0.2)",
-                    }}
-                    transition={{ duration: 2, repeat: Infinity }}
-                  />
-
                   {/* Product card */}
                   <motion.div
                     whileHover={{ scale: 1.08, y: -5 }}
@@ -241,8 +201,8 @@ export default function EcosystemBuilder() {
                       flex items-center justify-center transition-all duration-300 overflow-hidden
                       bg-white/10 backdrop-blur-md border-2
                       ${isSelected 
-                        ? "border-white shadow-[0_0_30px_rgba(147,51,234,0.5)]" 
-                        : "border-white/40 hover:border-white/60 hover:shadow-[0_0_20px_rgba(255,255,255,0.3)]"}
+                        ? "border-white" 
+                        : "border-white/40 hover:border-white/60"}
                     `}
                   >
                     {images[product.id] ? (
@@ -338,7 +298,7 @@ export default function EcosystemBuilder() {
                 }}
                 className="px-4 md:px-6 py-2 md:py-3 rounded-xl bg-green-500/20 hover:bg-green-500/30 text-white font-semibold uppercase tracking-wider transition-all backdrop-blur-sm border border-green-500/40 text-sm md:text-base"
               >
-                Keep & Continue
+                {currentStepIndex < steps.length - 1 ? "Continue" : "Finish"}
               </button>
             )}
           </>
@@ -355,11 +315,11 @@ export default function EcosystemBuilder() {
                 setShowSummary(true);
               }
             }}
-            className="px-4 md:px-8 py-2 md:py-4 rounded-xl bg-white/20 hover:bg-white/30 text-white font-semibold uppercase tracking-wider transition-all backdrop-blur-sm border border-white/40 shadow-[0_0_20px_rgba(255,255,255,0.3)] disabled:opacity-40 disabled:cursor-not-allowed disabled:shadow-none text-sm md:text-base"
+            className="px-4 md:px-8 py-2 md:py-4 rounded-xl bg-white/20 hover:bg-white/30 text-white font-semibold uppercase tracking-wider transition-all backdrop-blur-sm border border-white/40 disabled:opacity-40 disabled:cursor-not-allowed text-sm md:text-base"
           >
             {currentStepIndex < steps.length - 1 
               ? (hasCurrentSelection() ? "Continue" : "Select")
-              : "Finish & Review"}
+              : "Finish"}
           </button>
         )}
       </motion.div>

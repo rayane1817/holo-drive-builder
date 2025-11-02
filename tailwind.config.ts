@@ -64,7 +64,8 @@ export default {
         sm: "calc(var(--radius) - 4px)",
       },
       fontFamily: {
-        futuristic: ['Eurostile', 'Arial Narrow', 'sans-serif'],
+        sans: ['"Exo 2"', 'system-ui', 'sans-serif'],
+        futuristic: ['"Exo 2"', 'Eurostile', 'Arial Narrow', 'sans-serif'],
       },
       keyframes: {
         "accordion-down": {

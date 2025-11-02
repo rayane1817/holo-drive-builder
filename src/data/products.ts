@@ -45,17 +45,19 @@ export const productData: Record<StepId, StepConfig> = {
       { id: "488-gt3", name: "Ferrari 488 GT3", url: "https://www.thrustmaster.com/en-us/products/488-gt3-wheel-add-on/", price: 199 },
       { id: "open-wheel", name: "TM Open Wheel", url: "https://www.thrustmaster.com/en-us/products/tm-open-wheel-add-on/", price: 199 },
       { id: "599xx", name: "599XX EVO 30 Alcantara", url: "https://www.thrustmaster.com/en-us/products/599xx-evo-30-wheel-add-on-alcantara/", price: 199 },
-      { id: "hypercar", name: "HYPERCAR WHEEL", url: "https://www.thrustmaster.com/en-us/products/hypercar-wheel-add-on/", price: 249 }
+      { id: "hypercar", name: "HYPERCAR WHEEL", url: "https://www.thrustmaster.com/en-us/products/hypercar-wheel-add-on/", price: 249 },
+      { id: "leather-28", name: "TM Leather 28 GT", url: "https://www.thrustmaster.com/en-us/products/tm-leather-28-gt-wheel-add-on/", price: 149 },
+      { id: "sparco-r383", name: "Sparco R383 Mod", url: "https://www.thrustmaster.com/en-us/products/sparco-r383-mod/", price: 199 }
     ],
     compatibility: {
-      "t818": ["sf1000", "488-gt3", "open-wheel", "599xx", "hypercar"],
-      "t598": ["sf1000", "488-gt3", "open-wheel", "599xx", "hypercar"],
-      "t300": ["sf1000", "488-gt3", "open-wheel", "599xx", "hypercar"],
-      "tx": ["sf1000", "488-gt3", "open-wheel", "599xx", "hypercar"],
-      "ts-xw": ["sf1000", "488-gt3", "open-wheel", "599xx", "hypercar"],
-      "ts-pc": ["sf1000", "488-gt3", "open-wheel", "599xx", "hypercar"],
-      "t-gt-ii": ["sf1000", "488-gt3", "open-wheel", "599xx", "hypercar"],
-      "*": ["sf1000", "488-gt3", "open-wheel", "599xx", "hypercar"]
+      "t818": ["sf1000", "488-gt3", "open-wheel", "599xx", "hypercar", "leather-28", "sparco-r383"],
+      "t598": ["sf1000", "488-gt3", "open-wheel", "599xx", "hypercar", "leather-28", "sparco-r383"],
+      "t300": ["sf1000", "488-gt3", "open-wheel", "599xx", "hypercar", "leather-28", "sparco-r383"],
+      "tx": ["sf1000", "488-gt3", "open-wheel", "599xx", "hypercar", "leather-28", "sparco-r383"],
+      "ts-xw": ["sf1000", "488-gt3", "open-wheel", "599xx", "hypercar", "leather-28", "sparco-r383"],
+      "ts-pc": ["sf1000", "488-gt3", "open-wheel", "599xx", "hypercar", "leather-28", "sparco-r383"],
+      "t-gt-ii": ["sf1000", "488-gt3", "open-wheel", "599xx", "hypercar", "leather-28", "sparco-r383"],
+      "*": ["sf1000", "488-gt3", "open-wheel", "599xx", "hypercar", "leather-28", "sparco-r383"]
     }
   },
   pedals: {
@@ -78,6 +80,7 @@ export const productData: Record<StepId, StepConfig> = {
     position: { angle: 180 },
     products: [
       { id: "th8a", name: "TH8A", url: "https://www.thrustmaster.com/en-us/products/th8a-shifter-add-on/", price: 199 },
+      { id: "th8s", name: "TH8S", url: "https://www.thrustmaster.com/en-us/products/th8s-shifter-add-on/", price: 159 },
       { id: "tss", name: "TSS Handbrake Sparco", url: "https://www.thrustmaster.com/en-us/products/tss-handbrake-sparco-mod/", price: 149 }
     ]
   },
