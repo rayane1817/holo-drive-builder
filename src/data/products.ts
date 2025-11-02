@@ -41,13 +41,13 @@ export const productData: Record<StepId, StepConfig> = {
     multi: true,
     position: { angle: 0 },
     products: [
-      { id: "sf1000", name: "Ferrari SF1000", url: "https://www.thrustmaster.com/en-us/products/formula-wheel-add-on-ferrari-sf1000-edition/", price: 399 },
-      { id: "488-gt3", name: "Ferrari 488 GT3", url: "https://www.thrustmaster.com/en-us/products/ferrari-488-gt3-wheel-add-on/", price: 199 },
-      { id: "open-wheel", name: "TM Open Wheel", url: "https://www.thrustmaster.com/en-us/products/tm-open-wheel-add-on/", price: 199 },
-      { id: "599xx", name: "599XX EVO 30 Alcantara", url: "https://www.thrustmaster.com/en-us/products/599xx-evo-30-wheel-add-on-alcantara/", price: 199 },
-      { id: "hypercar", name: "HYPERCAR WHEEL", url: "https://www.thrustmaster.com/en-us/products/hypercar-wheel-add-on/", price: 249 },
-      { id: "leather-28", name: "TM Leather 28 GT", url: "https://www.thrustmaster.com/en-us/products/tm-leather-28-gt-wheel-add-on/", price: 149 },
-      { id: "sparco-r383", name: "Sparco R383 Mod", url: "https://www.thrustmaster.com/en-us/products/rally-wheel-add-on-sparco-r383-mod/", price: 199 }
+      { id: "sf1000", name: "Ferrari SF1000", url: "https://www.thrustmaster.com/en-us/products/formula-wheel-add-on-ferrari-sf1000-edition/", price: 399, image: "https://images.unsplash.com/photo-1612810806563-4cb8265db55f?w=400" },
+      { id: "488-gt3", name: "Ferrari 488 GT3", url: "https://www.thrustmaster.com/en-us/products/ferrari-488-gt3-wheel-add-on/", price: 199, image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400" },
+      { id: "open-wheel", name: "TM Open Wheel", url: "https://www.thrustmaster.com/en-us/products/tm-open-wheel-add-on/", price: 199, image: "https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=400" },
+      { id: "599xx", name: "599XX EVO 30 Alcantara", url: "https://www.thrustmaster.com/en-us/products/599xx-evo-30-wheel-add-on-alcantara/", price: 199, image: "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?w=400" },
+      { id: "hypercar", name: "HYPERCAR WHEEL", url: "https://www.thrustmaster.com/en-us/products/hypercar-wheel-add-on/", price: 249, image: "https://images.unsplash.com/photo-1610147323479-a7fb11ffd5dd?w=400" },
+      { id: "leather-28", name: "TM Leather 28 GT", url: "https://www.thrustmaster.com/en-us/products/tm-leather-28-gt-wheel-add-on/", price: 149, image: "https://images.unsplash.com/photo-1580273916550-e323be2ae537?w=400" },
+      { id: "sparco-r383", name: "Sparco R383 Mod", url: "https://www.thrustmaster.com/en-us/products/rally-wheel-add-on-sparco-r383-mod/", price: 199, image: "https://images.unsplash.com/photo-1600705722908-bab1e61c0b4d?w=400" }
     ],
     compatibility: {
       "t818": ["sf1000", "488-gt3", "open-wheel", "599xx", "hypercar", "leather-28", "sparco-r383"],
@@ -91,8 +91,8 @@ export const productData: Record<StepId, StepConfig> = {
     multi: true,
     position: { angle: 270 },
     products: [
-      { id: "bt-led", name: "BT LED Display", url: "https://www.thrustmaster.com/en-us/products/bt-led-display/", price: 119 },
-      { id: "quick-release", name: "Quick Release", url: "https://www.thrustmaster.com/en-us/products/quick-release-adapter/", price: 59 }
+      { id: "bt-led", name: "BT LED Display", url: "https://www.thrustmaster.com/en-us/products/bt-led-display/", price: 119, image: "https://images.unsplash.com/photo-1530893609608-32a9af3aa95c?w=400" },
+      { id: "quick-release", name: "Quick Release", url: "https://www.thrustmaster.com/en-us/products/quick-release-adapter/", price: 59, image: "https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=400" }
     ]
   }
 };

@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { ExternalLink } from "lucide-react";
 import { steps } from "@/data/products";
 import type { Product } from "@/data/products";
-import { useBuilderState } from "@/hooks/useBuilderState";
+import { useBuilderState, generateShareUrl } from "@/hooks/useBuilderState";
 import { useProductImages } from "@/services/imageService";
 import { toast } from "sonner";
 
@@ -146,10 +146,10 @@ export default function EcosystemBuilder() {
           // Calculate radial position with responsive radius
           const totalProducts = displayProducts.length;
           const angleStep = (2 * Math.PI) / totalProducts;
-          const angle = index * angleStep - Math.PI / 2 - 0.05; // Start from top, slightly offset left for better centering
+          const angle = index * angleStep - Math.PI / 2 - 0.1; // Start from top, offset left for centering
           
           // Optimized radius for better spacing and visibility
-          const radiusPercent = window.innerWidth >= 768 ? 24 : 30; // Smaller on desktop, centered on mobile
+          const radiusPercent = window.innerWidth >= 768 ? 24 : 28; // Smaller on desktop, more centered on mobile
           
           // Calculate node position
           const nodeX = 50 + radiusPercent * Math.cos(angle);
@@ -441,14 +441,25 @@ export default function EcosystemBuilder() {
                   navigator.clipboard.writeText(buildList);
                   toast.success("Build list copied to clipboard!");
                 }}
-                className="flex-1 px-4 md:px-6 py-3 bg-blue-500/30 hover:bg-blue-500/40 rounded-xl text-white font-semibold transition-all"
+                className="flex-1 px-4 md:px-6 py-3 bg-blue-500/30 hover:bg-blue-500/40 rounded-xl text-white font-semibold transition-all uppercase tracking-wider"
               >
                 Copy Build List
               </button>
               
               <button
+                onClick={() => {
+                  const shareUrl = generateShareUrl(state.selections);
+                  navigator.clipboard.writeText(shareUrl);
+                  toast.success("Share link copied to clipboard!");
+                }}
+                className="flex-1 px-4 md:px-6 py-3 bg-cyan-500/30 hover:bg-cyan-500/40 rounded-xl text-white font-semibold transition-all uppercase tracking-wider"
+              >
+                Share Build
+              </button>
+              
+              <button
                 onClick={() => setShowSummary(false)}
-                className="px-4 md:px-6 py-3 bg-white/10 hover:bg-white/20 rounded-xl text-white font-semibold transition-all"
+                className="px-4 md:px-6 py-3 bg-white/10 hover:bg-white/20 rounded-xl text-white font-semibold transition-all uppercase tracking-wider"
               >
                 Close
               </button>
