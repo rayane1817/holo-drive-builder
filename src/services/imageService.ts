@@ -116,13 +116,8 @@ export const useProductImages = (products: Product[]) => {
   const [images, setImages] = useState<Record<string, string>>(() => {
     const initial: Record<string, string> = {};
     products.forEach(p => {
-      // Prioritize product.image if it exists
-      if (p.image) {
-        initial[p.id] = p.image;
-      } else {
-        const cached = getCachedImage(p.url);
-        if (cached) initial[p.id] = cached;
-      }
+      const cached = getCachedImage(p.url);
+      if (cached) initial[p.id] = cached;
     });
     return initial;
   });
@@ -130,16 +125,11 @@ export const useProductImages = (products: Product[]) => {
   useEffect(() => {
     products.forEach(product => {
       if (!images[product.id]) {
-        // Use product.image if available, otherwise fetch from URL
-        if (product.image) {
-          setImages(prev => ({ ...prev, [product.id]: product.image! }));
-        } else {
-          resolveProductImage(product.url, (imageUrl) => {
-            if (imageUrl) {
-              setImages(prev => ({ ...prev, [product.id]: imageUrl }));
-            }
-          });
-        }
+        resolveProductImage(product.url, (imageUrl) => {
+          if (imageUrl) {
+            setImages(prev => ({ ...prev, [product.id]: imageUrl }));
+          }
+        });
       }
     });
   }, [products, images]);
