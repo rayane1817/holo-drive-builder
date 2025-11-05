@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
-import { ExternalLink } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ExternalLink, X, Copy, Check } from "lucide-react";
 import { steps } from "@/data/products";
 import type { Product } from "@/data/products";
 import { useBuilderState, generateShareUrl } from "@/hooks/useBuilderState";
@@ -20,6 +20,7 @@ export default function EcosystemBuilder() {
   const images = useProductImages(allProducts);
   const [showSummary, setShowSummary] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
+  const [linkCopied, setLinkCopied] = useState(false);
   
   const currentStepIndex = steps.findIndex(s => s.id === state.activeStep);
 
@@ -151,7 +152,7 @@ export default function EcosystemBuilder() {
       </div>
 
       {/* Ecosystem Container */}
-      <div className="relative w-full h-[800px] sm:h-[900px] md:h-[1000px] flex items-center justify-center py-16 md:py-24 px-4">
+      <div className="relative w-full h-[800px] sm:h-[900px] md:h-[1000px] flex items-center justify-center py-16 md:py-24 px-4 ml-[-5%]">
         {/* Center Hub - only show after wheelbase is selected */}
         {showCenterHub && centerProduct && (
           <motion.div
@@ -350,149 +351,204 @@ export default function EcosystemBuilder() {
         )}
       </motion.div>
 
-      {/* Summary Modal */}
-      {showSummary && (
-        <motion.div 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-          onClick={() => setShowSummary(false)}
-        >
-          <motion.div 
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            onClick={(e) => e.stopPropagation()}
-            className="bg-white/10 backdrop-blur-md border border-white/30 rounded-2xl p-6 md:p-8 max-w-2xl w-full max-h-[80vh] overflow-y-auto"
+      {/* Summary Modal - Hub and Spoke Layout */}
+      <AnimatePresence>
+        {showSummary && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 z-50 overflow-auto"
           >
-            <h2 className="text-2xl md:text-3xl font-bold text-white mb-6">Your Build Summary</h2>
+            {/* Grid background */}
+            <div className="absolute inset-0 bg-[linear-gradient(rgba(59,130,246,0.1)_1px,transparent_1px),linear-gradient(90deg,rgba(59,130,246,0.1)_1px,transparent_1px)] bg-[size:50px_50px]" />
             
-            {/* Required selections */}
-            <div className="mb-6">
-              <h3 className="text-lg font-semibold text-white/80 mb-3">Required Components</h3>
-              {state.selections.wheelbase && (
-                <BuildItem 
-                  label="Wheelbase" 
-                  product={steps[0].products.find(p => p.id === state.selections.wheelbase)} 
-                  image={state.selections.wheelbase ? images[state.selections.wheelbase] : undefined}
-                />
-              )}
-              {state.selections.wheel && (
-                <>
-                  {Array.isArray(state.selections.wheel) ? (
-                    state.selections.wheel.map(wheelId => {
-                      const product = steps[1].products.find(p => p.id === wheelId);
-                      return product ? (
-                        <BuildItem 
-                          key={wheelId}
-                          label="Wheel" 
-                          product={product}
-                          image={images[wheelId]}
-                        />
-                      ) : null;
-                    })
-                  ) : (
-                    <BuildItem 
-                      label="Wheel" 
-                      product={steps[1].products.find(p => p.id === state.selections.wheel)} 
-                      image={state.selections.wheel ? images[state.selections.wheel] : undefined}
-                    />
-                  )}
-                </>
-              )}
-            </div>
+            {/* Close button */}
+            <button
+              onClick={() => setShowSummary(false)}
+              className="absolute top-6 left-6 z-50 text-white/60 hover:text-white transition-colors p-2 rounded-xl bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/30"
+            >
+              <X className="w-6 h-6" />
+            </button>
             
-            {/* Optional selections */}
-            {(state.selections.pedals || state.selections.shifter_handbrake || (state.selections.accessories && state.selections.accessories.length > 0)) && (
-              <div className="mb-6">
-                <h3 className="text-lg font-semibold text-white/80 mb-3">Optional Components</h3>
-                {state.selections.pedals && (
-                  <BuildItem 
-                    label="Pedals" 
-                    product={steps[2].products.find(p => p.id === state.selections.pedals)} 
-                    image={state.selections.pedals ? images[state.selections.pedals] : undefined}
-                  />
-                )}
-                {state.selections.shifter_handbrake && (
-                  <>
-                    {Array.isArray(state.selections.shifter_handbrake) ? (
-                      state.selections.shifter_handbrake.map(shId => {
-                        const product = steps[3].products.find(p => p.id === shId);
-                        return product ? (
-                          <BuildItem 
-                            key={shId}
-                            label="Shifter/Handbrake" 
-                            product={product}
-                            image={images[shId]}
+            {/* Copy Link Button */}
+            <motion.button
+              onClick={() => {
+                const url = generateShareUrl(state.selections);
+                navigator.clipboard.writeText(url);
+                setLinkCopied(true);
+                toast.success("Link copied to clipboard!");
+                setTimeout(() => setLinkCopied(false), 2000);
+              }}
+              className="absolute top-6 right-6 z-50 px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold uppercase tracking-wider transition-all backdrop-blur-sm border border-white/30 flex items-center gap-2"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              {linkCopied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+              {linkCopied ? "Copied!" : "Copy Link"}
+            </motion.button>
+            
+            {/* Title */}
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="absolute top-20 left-0 right-0 text-center z-40"
+            >
+              <h2 className="text-3xl md:text-4xl font-bold text-white mb-2">Your Complete Setup</h2>
+              <p className="text-white/70 text-lg">Total: ${calculateTotalPrice(state.selections)}</p>
+            </motion.div>
+            
+            {/* Hub and Spoke Layout */}
+            <div className="relative w-full min-h-screen flex items-center justify-center p-4 pt-32 pb-20">
+              <div className="relative w-full max-w-7xl aspect-square max-h-[800px]">
+                {/* Center - Wheelbase */}
+                {state.selections.wheelbase && (() => {
+                  const wheelbase = steps[0].products.find(p => p.id === state.selections.wheelbase);
+                  if (!wheelbase) return null;
+                  const img = images[wheelbase.id];
+                  
+                  return (
+                    <motion.div
+                      initial={{ scale: 0, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      transition={{ delay: 0.2 }}
+                      className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20"
+                    >
+                      <div className="relative w-48 h-48 md:w-64 md:h-64 rounded-full bg-white/5 backdrop-blur-sm border-4 border-blue-500/50 shadow-[0_0_60px_rgba(59,130,246,0.4)] flex items-center justify-center">
+                        {img && (
+                          <img src={img} alt={wheelbase.name} className="w-32 h-32 md:w-48 md:h-48 object-contain" />
+                        )}
+                      </div>
+                      <div className="absolute -bottom-12 left-1/2 -translate-x-1/2 text-center whitespace-nowrap">
+                        <p className="text-white font-semibold text-sm md:text-base">{wheelbase.name}</p>
+                      </div>
+                    </motion.div>
+                  );
+                })()}
+                
+                {/* Spokes - All other selections */}
+                {(() => {
+                  const allSelections: Array<{ product: Product; stepTitle: string; angle: number }> = [];
+                  
+                  // Collect all selections
+                  Object.entries(state.selections).forEach(([stepId, productId]) => {
+                    if (stepId === 'wheelbase') return;
+                    const step = steps.find(s => s.id === stepId);
+                    if (!step) return;
+                    
+                    if (Array.isArray(productId)) {
+                      productId.forEach(id => {
+                        const product = step.products.find(p => p.id === id);
+                        if (product) {
+                          allSelections.push({ product, stepTitle: step.label, angle: 0 });
+                        }
+                      });
+                    } else {
+                      const product = step.products.find(p => p.id === productId);
+                      if (product) {
+                        allSelections.push({ product, stepTitle: step.label, angle: 0 });
+                      }
+                    }
+                  });
+                  
+                  // Calculate angles
+                  const angleStep = 360 / allSelections.length;
+                  allSelections.forEach((item, index) => {
+                    item.angle = index * angleStep;
+                  });
+                  
+                  return allSelections.map(({ product, stepTitle, angle }, index) => {
+                    const img = images[product.id];
+                    const radius = 45; // percentage from center
+                    const rad = (angle - 90) * (Math.PI / 180);
+                    const x = 50 + radius * Math.cos(rad);
+                    const y = 50 + radius * Math.sin(rad);
+                    
+                    return (
+                      <motion.div
+                        key={`${product.id}-${index}`}
+                        initial={{ scale: 0, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        transition={{ delay: 0.3 + index * 0.1 }}
+                        className="absolute z-10"
+                        style={{
+                          left: `${x}%`,
+                          top: `${y}%`,
+                          transform: 'translate(-50%, -50%)'
+                        }}
+                      >
+                        {/* Connection line */}
+                        <svg
+                          className="absolute top-1/2 left-1/2 pointer-events-none"
+                          style={{
+                            width: `${radius * 2}%`,
+                            height: `${radius * 2}%`,
+                            transform: `translate(-50%, -50%) rotate(${angle + 90}deg)`,
+                            transformOrigin: 'center'
+                          }}
+                        >
+                          <line
+                            x1="50%"
+                            y1="50%"
+                            x2="50%"
+                            y2="0%"
+                            stroke="rgba(59, 130, 246, 0.3)"
+                            strokeWidth="2"
+                            strokeDasharray="5,5"
                           />
-                        ) : null;
-                      })
-                    ) : (
-                      <BuildItem 
-                        label="Shifter/Handbrake" 
-                        product={steps[3].products.find(p => p.id === state.selections.shifter_handbrake)} 
-                        image={state.selections.shifter_handbrake ? images[state.selections.shifter_handbrake] : undefined}
-                      />
-                    )}
-                  </>
-                )}
-                {state.selections.accessories && Array.isArray(state.selections.accessories) && state.selections.accessories.length > 0 && (
-                  <>
-                    {state.selections.accessories.map(accId => {
-                      const product = steps[4].products.find(p => p.id === accId);
-                      return product ? (
-                        <BuildItem 
-                          key={accId}
-                          label="Accessory" 
-                          product={product}
-                          image={images[accId]}
-                        />
-                      ) : null;
-                    })}
-                  </>
-                )}
+                          <circle cx="50%" cy="50%" r="4" fill="rgba(59, 130, 246, 0.5)" />
+                        </svg>
+                        
+                        {/* Product card */}
+                        <a
+                          href={product.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="block relative w-28 h-28 md:w-36 md:h-36 rounded-full bg-white/5 backdrop-blur-sm border-2 border-white/30 shadow-lg hover:border-blue-400/50 transition-all hover:scale-110 group"
+                        >
+                          {img && (
+                            <img 
+                              src={img} 
+                              alt={product.name} 
+                              className="w-full h-full object-contain p-3 md:p-4"
+                            />
+                          )}
+                          <ExternalLink className="absolute top-2 right-2 w-3 h-3 text-white/40 opacity-0 group-hover:opacity-100 transition-opacity" />
+                        </a>
+                        
+                        {/* Product info */}
+                        <div className="absolute top-full mt-2 left-1/2 -translate-x-1/2 text-center w-32 md:w-40">
+                          <p className="text-white text-xs md:text-sm font-semibold line-clamp-2">{product.name}</p>
+                          <p className="text-white/60 text-xs">${product.price}</p>
+                        </div>
+                      </motion.div>
+                    );
+                  });
+                })()}
               </div>
-            )}
-            
-            {/* Price Summary */}
-            <div className="mb-6 p-4 bg-white/10 rounded-xl border border-white/20">
-              <h3 className="text-xl font-bold text-white mb-2">Total Price</h3>
-              <p className="text-3xl font-bold text-white">${calculateTotalPrice(state.selections)}</p>
             </div>
             
-            {/* Action buttons */}
-            <div className="flex flex-col sm:flex-row gap-3 md:gap-4">
+            {/* Bottom Actions */}
+            <div className="fixed bottom-6 left-0 right-0 flex justify-center gap-4 px-4 z-50">
               <button
                 onClick={() => {
-                  const buildList = generateBuildList(state.selections);
-                  navigator.clipboard.writeText(buildList);
-                  toast.success("Build list copied to clipboard!");
+                  reset();
+                  setShowSummary(false);
                 }}
-                className="flex-1 px-4 md:px-6 py-3 bg-blue-500/30 hover:bg-blue-500/40 rounded-xl text-white font-semibold transition-all uppercase tracking-wider"
+                className="px-6 py-3 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold uppercase tracking-wider transition-all backdrop-blur-sm border border-white/30"
               >
-                Copy Build List
+                Start Over
               </button>
-              
-              <button
-                onClick={() => {
-                  const shareUrl = generateShareUrl(state.selections);
-                  navigator.clipboard.writeText(shareUrl);
-                  toast.success("Share link copied to clipboard!");
-                }}
-                className="flex-1 px-4 md:px-6 py-3 bg-cyan-500/30 hover:bg-cyan-500/40 rounded-xl text-white font-semibold transition-all uppercase tracking-wider"
-              >
-                Share Build
-              </button>
-              
               <button
                 onClick={() => setShowSummary(false)}
-                className="px-4 md:px-6 py-3 bg-white/10 hover:bg-white/20 rounded-xl text-white font-semibold transition-all uppercase tracking-wider"
+                className="px-6 py-3 rounded-xl bg-green-500/20 hover:bg-green-500/30 text-white font-semibold uppercase tracking-wider transition-all backdrop-blur-sm border border-green-500/40"
               >
-                Close
+                Continue Building
               </button>
             </div>
           </motion.div>
-        </motion.div>
-      )}
+        )}
+      </AnimatePresence>
     </div>
   );
 }
