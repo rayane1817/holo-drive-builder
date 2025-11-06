@@ -24,42 +24,20 @@ export default function EcosystemBuilder() {
   
   const currentStepIndex = steps.findIndex(s => s.id === state.activeStep);
 
+  // Check if loaded from share link and show summary
   useEffect(() => {
-    if (state.selections.wheelbase && state.selections.wheel) {
-      const wheelIds = Array.isArray(state.selections.wheel) ? state.selections.wheel : [state.selections.wheel];
-      const incompatibleWheels = wheelIds.filter(wheelId => !isWheelCompatible(wheelId, state.selections.wheelbase));
-      
-      if (incompatibleWheels.length > 0) {
-        const remaining = wheelIds.filter(wheelId => !incompatibleWheels.includes(wheelId));
-        setSelection("wheel", remaining.length > 0 ? remaining : undefined);
-        toast.error("Some selected wheels are not compatible with this wheelbase");
-      }
+    const params = new URLSearchParams(window.location.search);
+    const hasShareParams = params.has('base') || params.has('wheel') || params.has('pedals');
+    if (hasShareParams && Object.keys(state.selections).length > 0) {
+      setShowSummary(true);
     }
-  }, [state.selections.wheelbase]);
+  }, []);
 
   const hasWheelbaseSelection = !!state.selections.wheelbase;
-
-  const isWheelCompatible = (wheelId: string, wheelbaseId: string) => {
-    const wheelStep = steps.find(s => s.id === "wheel");
-    if (!wheelStep?.compatibility?.[wheelbaseId]) return true;
-    return wheelStep.compatibility[wheelbaseId].includes(wheelId);
-  };
 
   const getFilteredProducts = (stepId: string) => {
     const step = steps.find(s => s.id === stepId);
     if (!step) return [];
-    
-    if (stepId === "wheel" && state.selections.wheelbase && step.compatibility) {
-      const compatibleIds = step.compatibility[state.selections.wheelbase];
-      
-      if (compatibleIds) {
-        return step.products.filter(p => compatibleIds.includes(p.id));
-      } else if (step.compatibility["*"]) {
-        return step.products.filter(p => step.compatibility!["*"].includes(p.id));
-      }
-      return step.products;
-    }
-    
     return step.products;
   };
 
